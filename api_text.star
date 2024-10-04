@@ -15,6 +15,8 @@ def main(config):
     title_response_path = config.get("title_response_path", "")
     body_response_path = config.get("body_response_path", "")
     request_headers = config.get("request_headers", "")
+    title_font_color = config.get("title_font_color", "#FFFFFF")
+    title_bg_color = config.get("title_bg_color", "#00008B")
     debug_output = config.bool("debug_output", False)
     ttl_seconds = config.get("ttl_seconds", 20)
     ttl_seconds = int(ttl_seconds)
@@ -25,12 +27,14 @@ def main(config):
         print("CONFIG - title_response_path: " + title_response_path)
         print("CONFIG - body_response_path: " + body_response_path)
         print("CONFIG - request_headers: " + request_headers)
+        print("CONFIG - title_font_color: " + title_font_color)
+        print("CONFIG - title_bg_color: " + title_bg_color)
         print("CONFIG - debug_output: " + str(debug_output))
         print("CONFIG - ttl_seconds: " + str(ttl_seconds))
 
-    return get_text(api_url, title_response_path, body_response_path, request_headers, debug_output, ttl_seconds)
+    return get_text(api_url, title_response_path, body_response_path, request_headers, debug_output, ttl_seconds, title_font_color, title_bg_color)
 
-def get_text(api_url, title_response_path, body_response_path, request_headers, debug_output, ttl_seconds):
+def get_text(api_url, title_response_path, body_response_path, request_headers, debug_output, ttl_seconds, title_font_color, title_bg_color):
     failure = False
     message = ""
 
@@ -140,11 +144,11 @@ def get_text(api_url, title_response_path, body_response_path, request_headers, 
                                             width = 64,
                                             height = 8,
                                             scroll_direction = "horizontal",
-                                            child = render.Text(content = output_title, offset = 0),
+                                            child = render.Text(content = output_title, color = title_font_color,offset = 0),
                                         ),
                                         width = 64,
                                         height = 8,
-                                        color = "#00008B",
+                                        color = title_bg_color,
                                     ),
                                     render.Marquee(
                                         height = 24,
@@ -327,6 +331,20 @@ def get_schema():
                 desc = "Comma separated key:value pairs to build the request headers. eg, `x-api-key:abc123,content-type:application/json`",
                 icon = "",
                 default = "",
+            ),
+            schema.Text(
+                id = "title_font_color",
+                name = "Title text color",
+                desc = "Title text color using hex values. eg, `#FFFFFF`",
+                icon = "",
+                default = "#FFFFFF",
+            ),
+            schema.Text(
+                id = "title_bg_color",
+                name = "Title background color",
+                desc = "Title background color using hex values. eg, `#00008B`",
+                icon = "",
+                default = "#00008B",
             ),
             schema.Dropdown(
                 id = "ttl_seconds",
