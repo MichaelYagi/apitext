@@ -57,8 +57,7 @@ def get_text(api_url, title_response_path, body_response_path, request_headers, 
 
         if output_body != None and type(output_body) == "string":
             output = json.decode(output_body, None)
-            output_title = ""
-            output_body = ""
+            output_title = None
 
             if output_body != "":
                 if debug_output:
@@ -89,16 +88,18 @@ def get_text(api_url, title_response_path, body_response_path, request_headers, 
                                 failure = response_path_data["failure"]
                                 message = response_path_data["message"]
 
-                            if debug_output:
-                                print("Response content type JSON")
-
-                            if type(output) != "string":
-                                if message == "":
-                                    message = "Bad response path for JSON. Must point to a valid text URL."
+                            if failure == False:
                                 if debug_output:
-                                    print(message)
-                                failure = True
+                                    print("Response content type JSON")
+
+                                if type(output) != "dict":
+                                    if message == "":
+                                        message = "Bad response path for JSON. Must point to a valid text URL."
+                                    if debug_output:
+                                        print(message)
+                                    failure = True
                         else:
+                            output_body = None
                             message = "Missing response path for JSON"
                             if debug_output:
                                 print(message)
@@ -106,38 +107,18 @@ def get_text(api_url, title_response_path, body_response_path, request_headers, 
 
                     elif output_type == "text":
                         if debug_output:
-                            print("Response content type text")
+                            print("Response content type text")     
 
-                        output_body = output_body.replace("\n", "").replace("\\", "")
+                    if failure == False:
+                        if output_body != None and type(output_body) == "string":
+                            output_body = output_body.replace("\n", "").replace("\\", "")
+                        if output_title != None and type(output_title) == "string": 
+                            output_title = output_title.replace("\n", "").replace("\\", "")
 
-                    if output_body != None:
-                        children_content = [
-                            render.Marquee(
-                                height = 24,
-                                scroll_direction = "vertical",
-                                offset_start = 24,
-                                child = render.Column(
-                                    children = [
-                                        render.WrappedText(
-                                            content = output_body,
-                                            width = 64,
-                                            font = "tom-thumb",
-                                        ),
-                                    ],
-                                ),
-                            ),
-                        ]
-
-                        if output_title != "":
+                        if output_body != None and type(output_body) == "string":
                             children_content = [
-                                render.Box(
-                                    width = 64,
-                                    height = 8,
-                                    padding = 0,
-                                    child = render.Text(output_title, offset = 0),
-                                ),
                                 render.Marquee(
-                                    height = 24,
+                                    height = 32,
                                     scroll_direction = "vertical",
                                     offset_start = 24,
                                     child = render.Column(
@@ -151,6 +132,35 @@ def get_text(api_url, title_response_path, body_response_path, request_headers, 
                                     ),
                                 ),
                             ]
+
+                            if output_title != None and type(output_title) == "string":
+                                children_content = [
+                                    render.Box(
+                                        render.Marquee(
+                                            width = 64,
+                                            height = 8,
+                                            scroll_direction = "horizontal",
+                                            child = render.Text(content = output_title, offset = 0),
+                                        ),
+                                        width = 64,
+                                        height = 8,
+                                        color = "#00008B",
+                                    ),
+                                    render.Marquee(
+                                        height = 24,
+                                        scroll_direction = "vertical",
+                                        offset_start = 24,
+                                        child = render.Column(
+                                            children = [
+                                                render.WrappedText(
+                                                    content = output_body,
+                                                    width = 64,
+                                                    font = "tom-thumb",
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ]
 
                             return render.Root(
                                 delay = 100,
@@ -216,6 +226,8 @@ def parse_response_path(output, responsePathStr, failure, debug_output):
                 if debug_output:
                     print("responsePathArray invalid. " + str(item) + " does not exist")
                 break
+    else:
+        output = None
 
     return {"output": output, "failure": failure, "message": message}
 

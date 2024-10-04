@@ -1,0 +1,1 @@
+{"ttl_seconds":{"id":"ttl_seconds","value":"5"},"api_url":{"id":"api_url","value":"https://official-joke-api.appspot.com/random_joke"},"title_response_path":{"id":"title_response_path","value":"setu"},"body_response_path":{"id":"body_response_path","value":"punchline"},"debug_output":{"id":"debug_output","value":"true"}}
