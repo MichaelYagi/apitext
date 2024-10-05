@@ -17,6 +17,7 @@ def main(config):
     image_response_path = config.get("image_response_path", "")
     request_headers = config.get("request_headers", "")
     title_font_color = config.get("title_font_color", "#FFA500")
+    body_font_color = config.get("body_font_color", "#FFFFFF")
     debug_output = config.bool("debug_output", False)
     ttl_seconds = config.get("ttl_seconds", 20)
     ttl_seconds = int(ttl_seconds)
@@ -29,12 +30,13 @@ def main(config):
         print("CONFIG - image_response_path: " + image_response_path)
         print("CONFIG - request_headers: " + request_headers)
         print("CONFIG - title_font_color: " + title_font_color)
+        print("CONFIG - body_font_color: " + body_font_color)
         print("CONFIG - debug_output: " + str(debug_output))
         print("CONFIG - ttl_seconds: " + str(ttl_seconds))
 
-    return get_text(api_url, title_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, title_font_color)
+    return get_text(api_url, title_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, title_font_color, body_font_color)
 
-def get_text(api_url, title_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, title_font_color):
+def get_text(api_url, title_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, title_font_color, body_font_color):
     failure = False
     message = ""
 
@@ -147,7 +149,7 @@ def get_text(api_url, title_response_path, body_response_path, image_response_pa
                                 elif debug_output:
                                     print("Could not retrieve image")
 
-                            children.append(render.WrappedText(content = output_body, font = "tom-thumb"))
+                            children.append(render.WrappedText(content = output_body, font = "tom-thumb", color = body_font_color))
 
                             children_content = [
                                 render.Marquee(
@@ -334,6 +336,13 @@ def get_schema():
                 desc = "Comma separated key:value pairs to build the request headers. eg, `x-api-key:abc123,content-type:application/json`",
                 icon = "",
                 default = "",
+            ),
+            schema.Text(
+                id = "body_font_color",
+                name = "Body text color",
+                desc = "Body text color using hex values. eg, `#FFFFFF`",
+                icon = "",
+                default = "#FFFFFF",
             ),
             schema.Text(
                 id = "title_font_color",
