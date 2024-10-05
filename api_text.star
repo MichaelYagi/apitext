@@ -88,18 +88,26 @@ def get_text(api_url, title_response_path, body_response_path, image_response_pa
                             output_body = response_path_data["output"]
                             failure = response_path_data["failure"]
                             message = response_path_data["message"]
+                            if debug_output:
+                                print("Getting text body. Failure: " + str(failure))
 
+                            # Get title
                             if failure == False:
                                 response_path_data = parse_response_path(output, title_response_path, failure, debug_output)
                                 output_title = response_path_data["output"]
                                 failure = response_path_data["failure"]
                                 message = response_path_data["message"]
+                                if debug_output:
+                                    print("Getting text title. Failure: " + str(failure))
 
+                            # Get image
                             if failure == False:
                                 response_path_data = parse_response_path(output, image_response_path, failure, debug_output)
                                 output_image = response_path_data["output"]
-                                failure = response_path_data["failure"]
+                                # failure = response_path_data["failure"]
                                 message = response_path_data["message"]
+                                if debug_output:
+                                    print("Getting text image. Failure: " + str(response_path_data["failure"]))
 
                             if failure == False:
                                 if debug_output:
