@@ -118,12 +118,12 @@ def get_text(api_url, title_response_path, body_response_path, image_response_pa
 
                     elif output_type == "text":
                         if debug_output:
-                            print("Response content type text")     
+                            print("Response content type text")
 
                     if failure == False:
                         if output_body != None and type(output_body) == "string":
                             output_body = output_body.replace("\n", "").replace("\\", "")
-                        if output_title != None and type(output_title) == "string": 
+                        if output_title != None and type(output_title) == "string":
                             output_title = output_title.replace("\n", "").replace("\\", "")
 
                         if output_body != None and type(output_body) == "string":
@@ -142,11 +142,10 @@ def get_text(api_url, title_response_path, body_response_path, image_response_pa
                                         render.Row(
                                             expanded = True,
                                             children = [render.Image(src = img, width = 64)],
-                                        )
+                                        ),
                                     )
-                                else:
-                                    if debug_output:
-                                        print("Could not retrieve image")
+                                elif debug_output:
+                                    print("Could not retrieve image")
 
                             children.append(render.WrappedText(content = output_body, font = "tom-thumb"))
 
@@ -156,9 +155,9 @@ def get_text(api_url, title_response_path, body_response_path, image_response_pa
                                     scroll_direction = "vertical",
                                     width = 64,
                                     child = render.Column(
-                                        children = children
-                                    )
-                                )
+                                        children = children,
+                                    ),
+                                ),
                             ]
 
                             return render.Root(
@@ -166,7 +165,7 @@ def get_text(api_url, title_response_path, body_response_path, image_response_pa
                                 show_full_animation = True,
                                 child = render.Row(
                                     children = children_content,
-                                )
+                                ),
                             )
 
             else:
