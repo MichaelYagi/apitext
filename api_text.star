@@ -14,6 +14,7 @@ def main(config):
     api_url = config.str("api_url", "")
     title_response_path = config.get("title_response_path", "")
     body_response_path = config.get("body_response_path", "")
+    image_response_path = config.get("image_response_path", "")
     request_headers = config.get("request_headers", "")
     title_font_color = config.get("title_font_color", "#FFA500")
     debug_output = config.bool("debug_output", False)
@@ -25,14 +26,15 @@ def main(config):
         print("CONFIG - api_url: " + api_url)
         print("CONFIG - title_response_path: " + title_response_path)
         print("CONFIG - body_response_path: " + body_response_path)
+        print("CONFIG - image_response_path: " + image_response_path)
         print("CONFIG - request_headers: " + request_headers)
         print("CONFIG - title_font_color: " + title_font_color)
         print("CONFIG - debug_output: " + str(debug_output))
         print("CONFIG - ttl_seconds: " + str(ttl_seconds))
 
-    return get_text(api_url, title_response_path, body_response_path, request_headers, debug_output, ttl_seconds, title_font_color)
+    return get_text(api_url, title_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, title_font_color)
 
-def get_text(api_url, title_response_path, body_response_path, request_headers, debug_output, ttl_seconds, title_font_color):
+def get_text(api_url, title_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, title_font_color):
     failure = False
     message = ""
 
@@ -60,6 +62,7 @@ def get_text(api_url, title_response_path, body_response_path, request_headers, 
         if output_body != None and type(output_body) == "string":
             output = json.decode(output_body, None)
             output_title = None
+            output_image = None
 
             if output_body != "":
                 if debug_output:
@@ -91,6 +94,12 @@ def get_text(api_url, title_response_path, body_response_path, request_headers, 
                                 message = response_path_data["message"]
 
                             if failure == False:
+                                response_path_data = parse_response_path(output, image_response_path, failure, debug_output)
+                                output_image = response_path_data["output"]
+                                failure = response_path_data["failure"]
+                                message = response_path_data["message"]
+
+                            if failure == False:
                                 if debug_output:
                                     print("Response content type JSON")
 
@@ -118,51 +127,46 @@ def get_text(api_url, title_response_path, body_response_path, request_headers, 
                             output_title = output_title.replace("\n", "").replace("\\", "")
 
                         if output_body != None and type(output_body) == "string":
+                            children = []
+
+                            if output_title != None and type(output_title) == "string":
+                                children.append(render.WrappedText(content = output_title, font = "tom-thumb", color = title_font_color))
+
+                            if output_image != None and type(output_image) == "string" and output_image.startswith("http"):
+                                output_image_map = get_data(output_image, debug_output, {}, ttl_seconds)
+                                img = output_image_map["data"]
+                                output_type = output_image_map["type"]
+
+                                if img != None:
+                                    children.append(
+                                        render.Row(
+                                            expanded = True,
+                                            children = [render.Image(src = img, width = 64)],
+                                        )
+                                    )
+                                else:
+                                    if debug_output:
+                                        print("Could not retrieve image")
+
+                            children.append(render.WrappedText(content = output_body, font = "tom-thumb"))
+
                             children_content = [
                                 render.Marquee(
                                     height = 32,
                                     scroll_direction = "vertical",
-                                    offset_start = 24,
+                                    width = 64,
                                     child = render.Column(
-                                        children = [
-                                            render.WrappedText(
-                                                content = output_body,
-                                                width = 64,
-                                                font = "tom-thumb",
-                                            ),
-                                        ],
-                                    ),
-                                ),
+                                        children = children
+                                    )
+                                )
                             ]
-
-                            if output_title != None and type(output_title) == "string":
-                                children_content = [
-                                    render.Marquee(
-                                        height = 32,
-                                        scroll_direction = "vertical",
-                                        width = 64,
-                                        child = render.Column(
-                                            children = [
-                                                render.WrappedText(
-                                                    content = output_title,
-                                                    font = "tom-thumb",
-                                                    color = title_font_color
-                                                ),
-                                                render.WrappedText(
-                                                    content = output_body,
-                                                    font = "tom-thumb",
-                                                ),
-                                            ],
-                                        ),
-                                    ),
-                                ]
 
                             return render.Root(
                                 delay = 100,
                                 show_full_animation = True,
                                 child = render.Row(
                                     children = children_content,
-                                ),
+                                )
                             )
 
             else:
@@ -242,9 +246,11 @@ def get_data(url, debug_output, headerMap = {}, ttl_seconds = 20):
     if headers != None and headers.get("content-type") != None:
         contentType = headers.get("content-type")
 
-        if contentType.find("json") != -1 or contentType.find("text/plain") != -1:
+        if contentType.find("json") != -1 or contentType.find("text/plain") != -1 or contentType.find("image") != -1:
             if contentType.find("json") != -1:
                 contentType = "json"
+            elif contentType.find("image") != -1:
+                contentType = "image"
             else:
                 contentType = "text"
 
@@ -303,6 +309,13 @@ def get_schema():
                 default = "",
             ),
             schema.Text(
+                id = "body_response_path",
+                name = "JSON response path for body",
+                desc = "A comma separated path to the main body from the response JSON. eg. `json_key_1, 2, json_key_to_body`",
+                icon = "",
+                default = "",
+            ),
+            schema.Text(
                 id = "title_response_path",
                 name = "JSON response path for title",
                 desc = "(Optional) A comma separated path to the title from the response JSON. eg. `json_key, 0, json_key_to_title`",
@@ -310,9 +323,9 @@ def get_schema():
                 default = "",
             ),
             schema.Text(
-                id = "body_response_path",
-                name = "JSON response path for body",
-                desc = "A comma separated path to the main body from the response JSON. eg. `json_key_1, 2, json_key_to_body`",
+                id = "image_response_path",
+                name = "JSON response path for image URL",
+                desc = "(Optional) A comma separated path to an image from the response JSON. eg. `json_key_1, 2, json_key_to_image_url`",
                 icon = "",
                 default = "",
             ),
