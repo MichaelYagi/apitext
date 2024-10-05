@@ -15,8 +15,7 @@ def main(config):
     title_response_path = config.get("title_response_path", "")
     body_response_path = config.get("body_response_path", "")
     request_headers = config.get("request_headers", "")
-    title_font_color = config.get("title_font_color", "#FFFFFF")
-    title_bg_color = config.get("title_bg_color", "#00008B")
+    title_font_color = config.get("title_font_color", "#FFA500")
     debug_output = config.bool("debug_output", False)
     ttl_seconds = config.get("ttl_seconds", 20)
     ttl_seconds = int(ttl_seconds)
@@ -28,13 +27,12 @@ def main(config):
         print("CONFIG - body_response_path: " + body_response_path)
         print("CONFIG - request_headers: " + request_headers)
         print("CONFIG - title_font_color: " + title_font_color)
-        print("CONFIG - title_bg_color: " + title_bg_color)
         print("CONFIG - debug_output: " + str(debug_output))
         print("CONFIG - ttl_seconds: " + str(ttl_seconds))
 
-    return get_text(api_url, title_response_path, body_response_path, request_headers, debug_output, ttl_seconds, title_font_color, title_bg_color)
+    return get_text(api_url, title_response_path, body_response_path, request_headers, debug_output, ttl_seconds, title_font_color)
 
-def get_text(api_url, title_response_path, body_response_path, request_headers, debug_output, ttl_seconds, title_font_color, title_bg_color):
+def get_text(api_url, title_response_path, body_response_path, request_headers, debug_output, ttl_seconds, title_font_color):
     failure = False
     message = ""
 
@@ -139,26 +137,19 @@ def get_text(api_url, title_response_path, body_response_path, request_headers, 
 
                             if output_title != None and type(output_title) == "string":
                                 children_content = [
-                                    render.Box(
-                                        render.Marquee(
-                                            width = 64,
-                                            height = 8,
-                                            scroll_direction = "horizontal",
-                                            child = render.Text(content = output_title, color = title_font_color,offset = 0),
-                                        ),
-                                        width = 64,
-                                        height = 8,
-                                        color = title_bg_color,
-                                    ),
                                     render.Marquee(
-                                        height = 24,
+                                        height = 32,
                                         scroll_direction = "vertical",
-                                        offset_start = 24,
+                                        width = 64,
                                         child = render.Column(
                                             children = [
                                                 render.WrappedText(
+                                                    content = output_title,
+                                                    font = "tom-thumb",
+                                                    color = title_font_color
+                                                ),
+                                                render.WrappedText(
                                                     content = output_body,
-                                                    width = 64,
                                                     font = "tom-thumb",
                                                 ),
                                             ],
@@ -169,7 +160,7 @@ def get_text(api_url, title_response_path, body_response_path, request_headers, 
                             return render.Root(
                                 delay = 100,
                                 show_full_animation = True,
-                                child = render.Column(
+                                child = render.Row(
                                     children = children_content,
                                 ),
                             )
@@ -335,16 +326,9 @@ def get_schema():
             schema.Text(
                 id = "title_font_color",
                 name = "Title text color",
-                desc = "Title text color using hex values. eg, `#FFFFFF`",
+                desc = "Title text color using hex values. eg, `#FFA500`",
                 icon = "",
-                default = "#FFFFFF",
-            ),
-            schema.Text(
-                id = "title_bg_color",
-                name = "Title background color",
-                desc = "Title background color using hex values. eg, `#00008B`",
-                icon = "",
-                default = "#00008B",
+                default = "#FFA500",
             ),
             schema.Dropdown(
                 id = "ttl_seconds",
