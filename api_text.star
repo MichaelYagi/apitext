@@ -378,14 +378,14 @@ def get_schema():
             schema.Text(
                 id = "heading_response_path",
                 name = "JSON response path for heading",
-                desc = "(Optional) A comma separated path to the heading from the response JSON. eg. `json_key, 0, json_key_to_heading`",
+                desc = "A comma separated path to the heading from the response JSON. eg. `json_key, 0, json_key_to_heading`",
                 icon = "",
                 default = "",
             ),
             schema.Text(
                 id = "image_response_path",
                 name = "JSON response path for image URL",
-                desc = "(Optional) A comma separated path to an image from the response JSON. eg. `json_key_1, 2, json_key_to_image_url`",
+                desc = "A comma separated path to an image from the response JSON. eg. `json_key_1, 2, json_key_to_image_url`",
                 icon = "",
                 default = "",
             ),
