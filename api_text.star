@@ -92,7 +92,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                             failure = response_path_data["failure"]
                             message = response_path_data["message"]
                             if debug_output:
-                                print("Getting text body. Failure: " + str(failure))
+                                print("Getting text body. Pass: " + str(failure == False))
 
                             # Get heading
                             if failure == False:
@@ -101,7 +101,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                                 failure = response_path_data["failure"]
                                 message = response_path_data["message"]
                                 if debug_output:
-                                    print("Getting text heading. Failure: " + str(failure))
+                                    print("Getting text heading. Pass: " + str(failure == False))
 
                             # Get image
                             if failure == False:
@@ -111,7 +111,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                                 # failure = response_path_data["failure"]
                                 message = response_path_data["message"]
                                 if debug_output:
-                                    print("Getting text image. Failure: " + str(response_path_data["failure"]))
+                                    print("Getting image. Pass: " + str(failure == False))
 
                             if failure == False:
                                 if debug_output:
@@ -369,9 +369,9 @@ def get_schema():
                 default = "",
             ),
             schema.Text(
-                id = "body_response_path",
-                name = "JSON response path for body",
-                desc = "A comma separated path to the main body from the response JSON. eg. `json_key_1, 2, json_key_to_body`",
+                id = "request_headers",
+                name = "Request headers",
+                desc = "Comma separated key:value pairs to build the request headers. eg, `x-api-key:abc123,content-type:application/json`",
                 icon = "",
                 default = "",
             ),
@@ -379,6 +379,13 @@ def get_schema():
                 id = "heading_response_path",
                 name = "JSON response path for heading",
                 desc = "A comma separated path to the heading from the response JSON. eg. `json_key, 0, json_key_to_heading`",
+                icon = "",
+                default = "",
+            ),
+            schema.Text(
+                id = "body_response_path",
+                name = "JSON response path for body",
+                desc = "A comma separated path to the main body from the response JSON. eg. `json_key_1, 2, json_key_to_body`",
                 icon = "",
                 default = "",
             ),
@@ -398,11 +405,11 @@ def get_schema():
                 options = image_placement_options,
             ),
             schema.Text(
-                id = "request_headers",
-                name = "Request headers",
-                desc = "Comma separated key:value pairs to build the request headers. eg, `x-api-key:abc123,content-type:application/json`",
+                id = "heading_font_color",
+                name = "Heading text color",
+                desc = "Heading text color using Hex color codes. eg, `#FFA500`",
                 icon = "",
-                default = "",
+                default = "#FFA500",
             ),
             schema.Text(
                 id = "body_font_color",
@@ -410,13 +417,6 @@ def get_schema():
                 desc = "Body text color using Hex color codes. eg, `#FFFFFF`",
                 icon = "",
                 default = "#FFFFFF",
-            ),
-            schema.Text(
-                id = "heading_font_color",
-                name = "Heading text color",
-                desc = "Heading text color using Hex color codes. eg, `#FFA500`",
-                icon = "",
-                default = "#FFA500",
             ),
             schema.Dropdown(
                 id = "ttl_seconds",
