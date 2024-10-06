@@ -107,6 +107,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                             if failure == False:
                                 response_path_data = parse_response_path(output, image_response_path, failure, debug_output)
                                 output_image = response_path_data["output"]
+
                                 # failure = response_path_data["failure"]
                                 message = response_path_data["message"]
                                 if debug_output:
@@ -134,30 +135,32 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                             print("Response content type text")
 
                     if failure == False:
-                        if output_body != None and type(output_body) == "string":
+                        if type(output_body) == "string":
                             output_body = output_body.replace("\n", "").replace("\\", "")
-                        if output_heading != None and type(output_heading) == "string":
+                        if type(output_heading) == "string":
                             output_heading = output_heading.replace("\n", "").replace("\\", "")
 
-                        if output_body != None and type(output_body) == "string":
-                            children = []
+                        children = []
+                        img = None
 
-                            img = None
+                        if output_image != None and type(output_image) == "string" and output_image.startswith("http"):
+                            output_image_map = get_data(output_image, debug_output, {}, ttl_seconds)
+                            img = output_image_map["data"]
+                            output_type = output_image_map["type"]
 
-                            if output_image != None and type(output_image) == "string" and output_image.startswith("http"):
-                                output_image_map = get_data(output_image, debug_output, {}, ttl_seconds)
-                                img = output_image_map["data"]
-                                output_type = output_image_map["type"]
+                            if img == None and debug_output:
+                                print("Could not retrieve image")
 
-                                if img == None and debug_output:
-                                    print("Could not retrieve image")
-
+                        if output_heading == None and output_body == None and img == None:
+                            message = "No data available"
+                        else:
                             # Append heading
-                            if output_heading != None and type(output_heading) == "string":
+                            if type(output_heading) == "string":
                                 children.append(render.WrappedText(content = output_heading, font = "tom-thumb", color = heading_font_color))
 
-                            # Append body
-                            children.append(render.WrappedText(content = output_body, font = "tom-thumb", color = body_font_color))
+                            # Append
+                            if type(output_body) == "string":
+                                children.append(render.WrappedText(content = output_body, font = "tom-thumb", color = body_font_color))
 
                             # Insert image according to placement
                             if img != None:
@@ -171,7 +174,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                                 elif image_placement == 3:
                                     children.append(row)
                                 elif len(children) > 0:
-                                    children.insert(len(children)-1, row)
+                                    children.insert(len(children) - 1, row)
 
                             children_content = [
                                 render.Marquee(
@@ -244,13 +247,13 @@ def parse_response_path(output, responsePathStr, failure, debug_output):
                 valid_keys = []
                 if output != None and type(output) == "dict":
                     valid_keys = output.keys()
-                
+
                 has_item = False
                 for valid_key in valid_keys:
                     if valid_key == item:
                         has_item = True
                         break
-                    
+
                 if has_item:
                     output = output[item]
                 else:
