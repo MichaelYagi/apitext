@@ -12,11 +12,11 @@ load("schema.star", "schema")
 
 def main(config):
     api_url = config.str("api_url", "")
-    title_response_path = config.get("title_response_path", "")
+    heading_response_path = config.get("heading_response_path", "")
     body_response_path = config.get("body_response_path", "")
     image_response_path = config.get("image_response_path", "")
     request_headers = config.get("request_headers", "")
-    title_font_color = config.get("title_font_color", "#FFA500")
+    heading_font_color = config.get("heading_font_color", "#FFA500")
     body_font_color = config.get("body_font_color", "#FFFFFF")
     debug_output = config.bool("debug_output", False)
     image_placement = config.get("image_placement", 2)
@@ -27,19 +27,19 @@ def main(config):
     if debug_output:
         print("------------------------------")
         print("CONFIG - api_url: " + api_url)
-        print("CONFIG - title_response_path: " + title_response_path)
+        print("CONFIG - heading_response_path: " + heading_response_path)
         print("CONFIG - body_response_path: " + body_response_path)
         print("CONFIG - image_response_path: " + image_response_path)
         print("CONFIG - image_placement: " + str(image_placement))
         print("CONFIG - request_headers: " + request_headers)
-        print("CONFIG - title_font_color: " + title_font_color)
+        print("CONFIG - heading_font_color: " + heading_font_color)
         print("CONFIG - body_font_color: " + body_font_color)
         print("CONFIG - debug_output: " + str(debug_output))
         print("CONFIG - ttl_seconds: " + str(ttl_seconds))
 
-    return get_text(api_url, title_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, title_font_color, body_font_color, image_placement)
+    return get_text(api_url, heading_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, heading_font_color, body_font_color, image_placement)
 
-def get_text(api_url, title_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, title_font_color, body_font_color, image_placement):
+def get_text(api_url, heading_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, heading_font_color, body_font_color, image_placement):
     failure = False
     message = ""
 
@@ -66,7 +66,7 @@ def get_text(api_url, title_response_path, body_response_path, image_response_pa
 
         if output_body != None and type(output_body) == "string":
             output = json.decode(output_body, None)
-            output_title = None
+            output_heading = None
             output_image = None
 
             if output_body != "":
@@ -94,14 +94,14 @@ def get_text(api_url, title_response_path, body_response_path, image_response_pa
                             if debug_output:
                                 print("Getting text body. Failure: " + str(failure))
 
-                            # Get title
+                            # Get heading
                             if failure == False:
-                                response_path_data = parse_response_path(output, title_response_path, failure, debug_output)
-                                output_title = response_path_data["output"]
+                                response_path_data = parse_response_path(output, heading_response_path, failure, debug_output)
+                                output_heading = response_path_data["output"]
                                 failure = response_path_data["failure"]
                                 message = response_path_data["message"]
                                 if debug_output:
-                                    print("Getting text title. Failure: " + str(failure))
+                                    print("Getting text heading. Failure: " + str(failure))
 
                             # Get image
                             if failure == False:
@@ -136,8 +136,8 @@ def get_text(api_url, title_response_path, body_response_path, image_response_pa
                     if failure == False:
                         if output_body != None and type(output_body) == "string":
                             output_body = output_body.replace("\n", "").replace("\\", "")
-                        if output_title != None and type(output_title) == "string":
-                            output_title = output_title.replace("\n", "").replace("\\", "")
+                        if output_heading != None and type(output_heading) == "string":
+                            output_heading = output_heading.replace("\n", "").replace("\\", "")
 
                         if output_body != None and type(output_body) == "string":
                             children = []
@@ -152,34 +152,26 @@ def get_text(api_url, title_response_path, body_response_path, image_response_pa
                                 if img == None and debug_output:
                                     print("Could not retrieve image")
 
-                            if img != None and image_placement == 1:
-                                children.append(
-                                    render.Row(
-                                        expanded = True,
-                                        children = [render.Image(src = img, width = 64)],
-                                    ),
-                                )
+                            # Append heading
+                            if output_heading != None and type(output_heading) == "string":
+                                children.append(render.WrappedText(content = output_heading, font = "tom-thumb", color = heading_font_color))
 
-                            if output_title != None and type(output_title) == "string":
-                                children.append(render.WrappedText(content = output_title, font = "tom-thumb", color = title_font_color))
-
-                            if img != None and image_placement == 2:
-                                children.append(
-                                    render.Row(
-                                        expanded = True,
-                                        children = [render.Image(src = img, width = 64)],
-                                    ),
-                                )
-
+                            # Append body
                             children.append(render.WrappedText(content = output_body, font = "tom-thumb", color = body_font_color))
 
-                            if img != None and image_placement == 3:
-                                children.append(
-                                    render.Row(
-                                        expanded = True,
-                                        children = [render.Image(src = img, width = 64)],
-                                    ),
+                            # Insert image according to placement
+                            if img != None:
+                                row = render.Row(
+                                    expanded = True,
+                                    children = [render.Image(src = img, width = 64)],
                                 )
+
+                                if image_placement == 1:
+                                    children.insert(0, row)
+                                elif image_placement == 3:
+                                    children.append(row)
+                                elif len(children) > 0:
+                                    children.insert(len(children)-1, row)
 
                             children_content = [
                                 render.Marquee(
@@ -362,9 +354,9 @@ def get_schema():
                 default = "",
             ),
             schema.Text(
-                id = "title_response_path",
-                name = "JSON response path for title",
-                desc = "(Optional) A comma separated path to the title from the response JSON. eg. `json_key, 0, json_key_to_title`",
+                id = "heading_response_path",
+                name = "JSON response path for heading",
+                desc = "(Optional) A comma separated path to the heading from the response JSON. eg. `json_key, 0, json_key_to_heading`",
                 icon = "",
                 default = "",
             ),
@@ -393,14 +385,14 @@ def get_schema():
             schema.Text(
                 id = "body_font_color",
                 name = "Body text color",
-                desc = "Body text color using hex values. eg, `#FFFFFF`",
+                desc = "Body text color using Hex color codes. eg, `#FFFFFF`",
                 icon = "",
                 default = "#FFFFFF",
             ),
             schema.Text(
-                id = "title_font_color",
-                name = "Title text color",
-                desc = "Title text color using hex values. eg, `#FFA500`",
+                id = "heading_font_color",
+                name = "Heading text color",
+                desc = "Heading text color using Hex color codes. eg, `#FFA500`",
                 icon = "",
                 default = "#FFA500",
             ),
