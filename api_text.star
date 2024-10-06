@@ -189,7 +189,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                     child = render.Marquee(
                         offset_start = 32,
                         offset_end = 32,
-                        height = 32,
+                        height = 64,
                         scroll_direction = "vertical",
                         width = 64,
                         child = render.WrappedText(output_content),
