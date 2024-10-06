@@ -19,6 +19,8 @@ def main(config):
     title_font_color = config.get("title_font_color", "#FFA500")
     body_font_color = config.get("body_font_color", "#FFFFFF")
     debug_output = config.bool("debug_output", False)
+    image_order = config.get("image_order", 2)
+    image_order = int(image_order)
     ttl_seconds = config.get("ttl_seconds", 20)
     ttl_seconds = int(ttl_seconds)
 
@@ -28,15 +30,16 @@ def main(config):
         print("CONFIG - title_response_path: " + title_response_path)
         print("CONFIG - body_response_path: " + body_response_path)
         print("CONFIG - image_response_path: " + image_response_path)
+        print("CONFIG - image_order: " + str(image_order))
         print("CONFIG - request_headers: " + request_headers)
         print("CONFIG - title_font_color: " + title_font_color)
         print("CONFIG - body_font_color: " + body_font_color)
         print("CONFIG - debug_output: " + str(debug_output))
         print("CONFIG - ttl_seconds: " + str(ttl_seconds))
 
-    return get_text(api_url, title_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, title_font_color, body_font_color)
+    return get_text(api_url, title_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, title_font_color, body_font_color, image_order)
 
-def get_text(api_url, title_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, title_font_color, body_font_color):
+def get_text(api_url, title_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, title_font_color, body_font_color, image_order):
     failure = False
     message = ""
 
@@ -139,25 +142,44 @@ def get_text(api_url, title_response_path, body_response_path, image_response_pa
                         if output_body != None and type(output_body) == "string":
                             children = []
 
-                            if output_title != None and type(output_title) == "string":
-                                children.append(render.WrappedText(content = output_title, font = "tom-thumb", color = title_font_color))
+                            img = None
 
                             if output_image != None and type(output_image) == "string" and output_image.startswith("http"):
                                 output_image_map = get_data(output_image, debug_output, {}, ttl_seconds)
                                 img = output_image_map["data"]
                                 output_type = output_image_map["type"]
 
-                                if img != None:
-                                    children.append(
-                                        render.Row(
-                                            expanded = True,
-                                            children = [render.Image(src = img, width = 64)],
-                                        ),
-                                    )
-                                elif debug_output:
+                                if img == None and debug_output:
                                     print("Could not retrieve image")
 
+                            if img != None and image_order == 1:
+                                children.append(
+                                    render.Row(
+                                        expanded = True,
+                                        children = [render.Image(src = img, width = 64)],
+                                    ),
+                                )
+
+                            if output_title != None and type(output_title) == "string":
+                                children.append(render.WrappedText(content = output_title, font = "tom-thumb", color = title_font_color))
+
+                            if img != None and image_order == 2:
+                                children.append(
+                                    render.Row(
+                                        expanded = True,
+                                        children = [render.Image(src = img, width = 64)],
+                                    ),
+                                )
+
                             children.append(render.WrappedText(content = output_body, font = "tom-thumb", color = body_font_color))
+
+                            if img != None and image_order == 3:
+                                children.append(
+                                    render.Row(
+                                        expanded = True,
+                                        children = [render.Image(src = img, width = 64)],
+                                    ),
+                                )
 
                             children_content = [
                                 render.Marquee(
@@ -307,6 +329,21 @@ def get_schema():
         ),
     ]
 
+    image_order_options = [
+        schema.Option(
+            display = "First",
+            value = "1",
+        ),
+        schema.Option(
+            display = "Second",
+            value = "2",
+        ),
+        schema.Option(
+            display = "Last",
+            value = "3",
+        ),
+    ]
+
     return schema.Schema(
         version = "1",
         fields = [
@@ -337,6 +374,14 @@ def get_schema():
                 desc = "(Optional) A comma separated path to an image from the response JSON. eg. `json_key_1, 2, json_key_to_image_url`",
                 icon = "",
                 default = "",
+            ),
+            schema.Dropdown(
+                id = "image_order",
+                name = "Set the image order.",
+                desc = "Determine which cell you see the image during scrolling.",
+                icon = "",
+                default = image_order_options[1].value,
+                options = image_order_options,
             ),
             schema.Text(
                 id = "request_headers",
