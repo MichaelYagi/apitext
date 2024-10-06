@@ -51,6 +51,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
             print(message)
 
     else:
+        # Parse request headers
         headerMap = {}
         if request_headers != "" or request_headers != {}:
             request_headers_array = request_headers.split(",")
@@ -60,16 +61,18 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                 if len(headerKeyValueArray) > 1:
                     headerMap[headerKeyValueArray[0].strip()] = headerKeyValueArray[1].strip()
 
-        output_body_map = get_data(api_url, debug_output, headerMap, ttl_seconds)
-        output_body = output_body_map["data"]
-        output_type = output_body_map["type"]
+        # Get API content
+        output_map = get_data(api_url, debug_output, headerMap, ttl_seconds)
+        output_content = output_map["data"]
+        output_type = output_map["type"]
 
-        if output_body != None and type(output_body) == "string":
-            output = json.decode(output_body, None)
+        if (output_type == "json" or output_type == "text") and (len(heading_response_path) > 0 or len(body_response_path) > 0 or len(image_response_path) > 0):
+            output = json.decode(output_content, None)
+            output_body = None
             output_heading = None
             output_image = None
 
-            if output_body != "":
+            if output != None:
                 if debug_output:
                     outputStr = str(output)
                     outputLen = len(outputStr)
@@ -83,128 +86,115 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                     else:
                         print("Decoded JSON: " + outputStr)
 
-                if failure == False:
-                    if output != None:
-                        if body_response_path != "" and output_type == "json":
-                            # Parse response path for JSON
-                            response_path_data = parse_response_path(output, body_response_path, failure, debug_output)
-                            output_body = response_path_data["output"]
-                            failure = response_path_data["failure"]
-                            message = response_path_data["message"]
-                            if debug_output:
-                                print("Getting text body. Pass: " + str(failure == False))
+                # Parse response path for JSON
+                response_path_data_body = parse_response_path(output, body_response_path, failure, debug_output)
+                output_body = response_path_data_body["output"]
+                body_parse_failure = response_path_data_body["failure"]
+                message = response_path_data_body["message"]
+                if debug_output:
+                    print("Getting text body. Pass: " + str(body_parse_failure == False))
 
-                            # Get heading
-                            if failure == False:
-                                response_path_data = parse_response_path(output, heading_response_path, failure, debug_output)
-                                output_heading = response_path_data["output"]
-                                failure = response_path_data["failure"]
-                                message = response_path_data["message"]
-                                if debug_output:
-                                    print("Getting text heading. Pass: " + str(failure == False))
+                # Get heading
+                response_path_data_heading = parse_response_path(output, heading_response_path, failure, debug_output)
+                output_heading = response_path_data_heading["output"]
+                heading_parse_failure = response_path_data_heading["failure"]
+                message = response_path_data_heading["message"]
+                if debug_output:
+                    print("Getting text heading. Pass: " + str(heading_parse_failure == False))
 
-                            # Get image
-                            if failure == False:
-                                response_path_data = parse_response_path(output, image_response_path, failure, debug_output)
-                                output_image = response_path_data["output"]
+                # Get image
+                response_path_data_image = parse_response_path(output, image_response_path, failure, debug_output)
+                output_image = response_path_data_image["output"]
+                image_parse_failure = response_path_data_image["failure"]
+                message = response_path_data_image["message"]
+                if debug_output:
+                    print("Getting image. Pass: " + str(image_parse_failure == False))
 
-                                # failure = response_path_data["failure"]
-                                message = response_path_data["message"]
-                                if debug_output:
-                                    print("Getting image. Pass: " + str(failure == False))
+                if body_parse_failure == False or heading_parse_failure == False or image_parse_failure == False:
+                    if type(output_body) == "string":
+                        output_body = output_body.replace("\n", "").replace("\\", "")
+                    if type(output_heading) == "string":
+                        output_heading = output_heading.replace("\n", "").replace("\\", "")
 
-                            if failure == False:
-                                if debug_output:
-                                    print("Response content type JSON")
+                    children = []
+                    img = None
+                    image_endpoint = ""
 
-                                if type(output) != "dict":
-                                    if message == "":
-                                        message = "Bad response path for JSON. Must point to a valid text URL."
-                                    if debug_output:
-                                        print(message)
-                                    failure = True
+                    # Process image data
+                    if output_image != None and type(output_image) == "string" and output_image.startswith("http"):
+                        image_endpoint = output_image
+                        output_image_map = get_data(image_endpoint, debug_output, {}, ttl_seconds)
+                        img = output_image_map["data"]
+                        output_type = output_image_map["type"]
+
+                        if img == None and debug_output:
+                            print("Could not retrieve image")
+
+                    # Append heading
+                    if output_heading != None and type(output_heading) == "string":
+                        children.append(render.WrappedText(content = output_heading, font = "tom-thumb", color = heading_font_color))
+
+                    # Append body
+                    if output_body != None and type(output_body) == "string":
+                        children.append(render.WrappedText(content = output_body, font = "tom-thumb", color = body_font_color))
+
+                    # Insert image according to placement
+                    if img != None:
+                        row = render.Row(
+                            expanded = True,
+                            children = [render.Image(src = img, width = 64)],
+                        )
+
+                        if image_placement == 1:
+                            children.insert(0, row)
+                        elif image_placement == 3:
+                            children.append(row)
+                        elif len(children) > 0:
+                            children.insert(len(children) - 1, row)
+                        elif len(children) == 0:
+                            children.append(row)
+                    elif len(image_response_path) > 0 and output_image == None and debug_output:
+                        if len(image_endpoint) > 0:
+                            print("Image URL found but failed to render URL " + image_endpoint)
                         else:
-                            output_body = None
-                            message = "Missing response path for JSON"
-                            if debug_output:
-                                print(message)
-                            failure = True
+                            print("No image URL found")
 
-                    elif output_type == "text":
-                        if debug_output:
-                            print("Response content type text")
+                    children_content = [
+                        render.Marquee(
+                            offset_start = 32,
+                            offset_end = 32,
+                            height = 32,
+                            scroll_direction = "vertical",
+                            width = 64,
+                            child = render.Column(
+                                children = children,
+                            ),
+                        ),
+                    ]
 
-                    if failure == False:
-                        if type(output_body) == "string":
-                            output_body = output_body.replace("\n", "").replace("\\", "")
-                        if type(output_heading) == "string":
-                            output_heading = output_heading.replace("\n", "").replace("\\", "")
-
-                        children = []
-                        img = None
-
-                        if output_image != None and type(output_image) == "string" and output_image.startswith("http"):
-                            output_image_map = get_data(output_image, debug_output, {}, ttl_seconds)
-                            img = output_image_map["data"]
-                            output_type = output_image_map["type"]
-
-                            if img == None and debug_output:
-                                print("Could not retrieve image")
-
-                        if output_heading == None and output_body == None and img == None:
-                            message = "No data available"
-                        else:
-                            # Append heading
-                            if output_heading != None and type(output_heading) == "string":
-                                children.append(render.WrappedText(content = output_heading, font = "tom-thumb", color = heading_font_color))
-
-                            # Append body
-                            if output_body != None and type(output_body) == "string":
-                                children.append(render.WrappedText(content = output_body, font = "tom-thumb", color = body_font_color))
-
-                            # Insert image according to placement
-                            if img != None:
-                                row = render.Row(
-                                    expanded = True,
-                                    children = [render.Image(src = img, width = 64)],
-                                )
-
-                                if image_placement == 1:
-                                    children.insert(0, row)
-                                elif image_placement == 3:
-                                    children.append(row)
-                                elif len(children) > 0:
-                                    children.insert(len(children) - 1, row)
-                            elif len(image_response_path) > 0 and output_image == None and debug_output:
-                                print("Image URL found but failed to render")
-
-                            children_content = [
-                                render.Marquee(
-                                    offset_start = 32,
-                                    offset_end = 32,
-                                    height = 32,
-                                    scroll_direction = "vertical",
-                                    width = 64,
-                                    child = render.Column(
-                                        children = children,
-                                    ),
-                                ),
-                            ]
-
-                            return render.Root(
-                                delay = 100,
-                                show_full_animation = True,
-                                child = render.Row(
-                                    children = children_content,
-                                ),
-                            )
+                    return render.Root(
+                        delay = 100,
+                        show_full_animation = True,
+                        child = render.Row(
+                            children = children_content,
+                        ),
+                    )
+                else:
+                    message = "No data available"
 
             else:
-                message = "Invalid URL"
-                if debug_output:
-                    print(message)
-                    print(output)
-                failure = True
+                return render.Root(
+                    delay = 100,
+                    show_full_animation = True,
+                    child = render.Marquee(
+                        offset_start = 32,
+                        offset_end = 32,
+                        height = 32,
+                        scroll_direction = "vertical",
+                        width = 64,
+                        child = render.WrappedText(output_content),
+                    ),
+                )
 
         else:
             message = "Oops! Check URL and header values. URL must return JSON or text."
