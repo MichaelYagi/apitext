@@ -155,11 +155,11 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                             message = "No data available"
                         else:
                             # Append heading
-                            if type(output_heading) == "string":
+                            if output_heading != None and type(output_heading) == "string":
                                 children.append(render.WrappedText(content = output_heading, font = "tom-thumb", color = heading_font_color))
 
-                            # Append
-                            if type(output_body) == "string":
+                            # Append body
+                            if output_body != None and type(output_body) == "string":
                                 children.append(render.WrappedText(content = output_body, font = "tom-thumb", color = body_font_color))
 
                             # Insert image according to placement
@@ -175,6 +175,8 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                                     children.append(row)
                                 elif len(children) > 0:
                                     children.insert(len(children) - 1, row)
+                            elif len(image_response_path) > 0 and output_image == None and debug_output:
+                                print("Image URL found but failed to render")
 
                             children_content = [
                                 render.Marquee(
