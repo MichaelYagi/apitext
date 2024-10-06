@@ -19,8 +19,8 @@ def main(config):
     title_font_color = config.get("title_font_color", "#FFA500")
     body_font_color = config.get("body_font_color", "#FFFFFF")
     debug_output = config.bool("debug_output", False)
-    image_order = config.get("image_order", 2)
-    image_order = int(image_order)
+    image_placement = config.get("image_placement", 2)
+    image_placement = int(image_placement)
     ttl_seconds = config.get("ttl_seconds", 20)
     ttl_seconds = int(ttl_seconds)
 
@@ -30,16 +30,16 @@ def main(config):
         print("CONFIG - title_response_path: " + title_response_path)
         print("CONFIG - body_response_path: " + body_response_path)
         print("CONFIG - image_response_path: " + image_response_path)
-        print("CONFIG - image_order: " + str(image_order))
+        print("CONFIG - image_placement: " + str(image_placement))
         print("CONFIG - request_headers: " + request_headers)
         print("CONFIG - title_font_color: " + title_font_color)
         print("CONFIG - body_font_color: " + body_font_color)
         print("CONFIG - debug_output: " + str(debug_output))
         print("CONFIG - ttl_seconds: " + str(ttl_seconds))
 
-    return get_text(api_url, title_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, title_font_color, body_font_color, image_order)
+    return get_text(api_url, title_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, title_font_color, body_font_color, image_placement)
 
-def get_text(api_url, title_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, title_font_color, body_font_color, image_order):
+def get_text(api_url, title_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, title_font_color, body_font_color, image_placement):
     failure = False
     message = ""
 
@@ -152,7 +152,7 @@ def get_text(api_url, title_response_path, body_response_path, image_response_pa
                                 if img == None and debug_output:
                                     print("Could not retrieve image")
 
-                            if img != None and image_order == 1:
+                            if img != None and image_placement == 1:
                                 children.append(
                                     render.Row(
                                         expanded = True,
@@ -163,7 +163,7 @@ def get_text(api_url, title_response_path, body_response_path, image_response_pa
                             if output_title != None and type(output_title) == "string":
                                 children.append(render.WrappedText(content = output_title, font = "tom-thumb", color = title_font_color))
 
-                            if img != None and image_order == 2:
+                            if img != None and image_placement == 2:
                                 children.append(
                                     render.Row(
                                         expanded = True,
@@ -173,7 +173,7 @@ def get_text(api_url, title_response_path, body_response_path, image_response_pa
 
                             children.append(render.WrappedText(content = output_body, font = "tom-thumb", color = body_font_color))
 
-                            if img != None and image_order == 3:
+                            if img != None and image_placement == 3:
                                 children.append(
                                     render.Row(
                                         expanded = True,
@@ -329,13 +329,13 @@ def get_schema():
         ),
     ]
 
-    image_order_options = [
+    image_placement_options = [
         schema.Option(
             display = "First",
             value = "1",
         ),
         schema.Option(
-            display = "Second",
+            display = "Before body",
             value = "2",
         ),
         schema.Option(
@@ -376,12 +376,12 @@ def get_schema():
                 default = "",
             ),
             schema.Dropdown(
-                id = "image_order",
-                name = "Set the image order.",
-                desc = "Determine which cell you see the image during scrolling.",
+                id = "image_placement",
+                name = "Set the image placement.",
+                desc = "Determine where you see the image during scrolling.",
                 icon = "",
-                default = image_order_options[1].value,
-                options = image_order_options,
+                default = image_placement_options[1].value,
+                options = image_placement_options,
             ),
             schema.Text(
                 id = "request_headers",
