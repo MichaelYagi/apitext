@@ -175,6 +175,8 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
 
                             children_content = [
                                 render.Marquee(
+                                    offset_start = 32,
+                                    offset_end = 32,
                                     height = 32,
                                     scroll_direction = "vertical",
                                     width = 64,
