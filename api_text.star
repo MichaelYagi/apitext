@@ -240,9 +240,26 @@ def parse_response_path(output, responsePathStr, failure, debug_output):
             if debug_output:
                 print("path array item: " + str(item) + " - type " + str(type(output)))
 
-            if output != None and type(output) == "dict" and type(item) == "string" and output.get(item) != None:
-                output = output[item]
-            elif output != None and type(output) == "list" and type(item) == "int" and item <= len(output) - 1 and output[item] != None:
+            if output != None and type(output) == "dict" and type(item) == "string":
+                valid_keys = []
+                if output != None and type(output) == "dict":
+                    valid_keys = output.keys()
+                
+                has_item = False
+                for valid_key in valid_keys:
+                    if valid_key == item:
+                        has_item = True
+                        break
+                    
+                if has_item:
+                    output = output[item]
+                else:
+                    failure = True
+                    message = "Response path invalid. " + str(item) + " does not exist"
+                    if debug_output:
+                        print("responsePathArray invalid. " + str(item) + " does not exist")
+                    break
+            elif output != None and type(output) == "list" and type(item) == "int" and item <= len(output) - 1:
                 output = output[item]
             else:
                 failure = True
