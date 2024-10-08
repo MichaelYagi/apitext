@@ -177,9 +177,9 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                             print("No image URL found")
 
                     total_lines = image_lines + heading_lines + body_lines
-                    total_lines = int(total_lines)
+                    total_lines = int(total_lines) + 32
                     if debug_output:
-                        print("Total number of lines: " + total_lines)
+                        print("Total number of lines: " + str(total_lines))
 
                     children_content = [
                         # render.Marquee(
