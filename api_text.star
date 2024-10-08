@@ -5,11 +5,11 @@ Description: Display text from an API endpoint.
 Author: Michael Yagi
 """
 
+load("animation.star", "animation")
 load("encoding/json.star", "json")
 load("http.star", "http")
 load("render.star", "render")
 load("schema.star", "schema")
-load("animation.star", "animation")
 
 def main(config):
     api_url = config.str("api_url", "")
@@ -156,7 +156,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                     # Insert image according to placement
                     image_lines = 0
                     if img != None:
-                        image_lines = 64
+                        image_lines = 32
                         row = render.Row(
                             expanded = True,
                             children = [render.Image(src = img, width = 64)],
@@ -187,7 +187,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                             render.Marquee(
                                 offset_start = 32,
                                 offset_end = 32,
-                                height = 32*len(children),
+                                height = 32 * len(children),
                                 scroll_direction = "vertical",
                                 width = 64,
                                 child = render.Column(
@@ -198,8 +198,8 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                     else:
                         children_content = [
                             animation.Transformation(
-                                duration = total_lines*(len(children)+1),  # Scroll speed
-                                height = total_lines*(len(children)+1),
+                                duration = total_lines * (len(children) + 1),  # Scroll speed
+                                height = total_lines * (len(children) + 1),
                                 child = render.Column(
                                     children = children,
                                 ),
@@ -211,7 +211,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                                     ),
                                     animation.Keyframe(
                                         percentage = 1,
-                                        transforms = [animation.Translate(0, -total_lines*(len(children)+1))],
+                                        transforms = [animation.Translate(0, -total_lines * (len(children) + 1))],
                                         curve = "linear",
                                     ),
                                 ],
