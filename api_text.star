@@ -126,7 +126,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                     image_endpoint = ""
 
                     # Process image data
-                    output_image_type = ""
+                    # output_image_type = ""
                     if output_image != None and type(output_image) == "string" and base_url.startswith("http"):
                         if output_image.startswith("http") == False:
                             if output_image.startswith("/"):
@@ -136,7 +136,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                         image_endpoint = output_image
                         output_image_map = get_data(image_endpoint, debug_output, {}, ttl_seconds)
                         img = output_image_map["data"]
-                        output_image_type = output_image_map["type"]
+                        # output_image_type = output_image_map["type"]
 
                         if img == None and debug_output:
                             print("Could not retrieve image")
