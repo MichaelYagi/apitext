@@ -197,27 +197,27 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                     #         ),
                     #     ]
                     # else:
-                        children_content = [
-                            animation.Transformation(
-                                duration = total_lines * (len(children) + 1),  # Scroll speed
-                                height = total_lines * (len(children) + 1),
-                                child = render.Column(
-                                    children = children,
-                                ),
-                                keyframes = [
-                                    animation.Keyframe(
-                                        percentage = 0,
-                                        transforms = [animation.Translate(0, 32)],
-                                        curve = "linear",
-                                    ),
-                                    animation.Keyframe(
-                                        percentage = 1,
-                                        transforms = [animation.Translate(0, -total_lines * (len(children) + 1))],
-                                        curve = "linear",
-                                    ),
-                                ],
+                    children_content = [
+                        animation.Transformation(
+                            duration = total_lines * (len(children) + 1),  # Scroll speed
+                            height = total_lines * (len(children) + 1),
+                            child = render.Column(
+                                children = children,
                             ),
-                        ]
+                            keyframes = [
+                                animation.Keyframe(
+                                    percentage = 0,
+                                    transforms = [animation.Translate(0, 32)],
+                                    curve = "linear",
+                                ),
+                                animation.Keyframe(
+                                    percentage = 1,
+                                    transforms = [animation.Translate(0, -total_lines * (len(children) + 1))],
+                                    curve = "linear",
+                                ),
+                            ],
+                        ),
+                    ]
 
                     return render.Root(
                         delay = 100,
