@@ -472,21 +472,21 @@ def get_schema():
             schema.Text(
                 id = "heading_response_path",
                 name = "JSON response path for heading",
-                desc = "A comma separated path to the heading from the response JSON. eg. `json_key, 0, json_key_to_heading`",
+                desc = "A comma separated path to the heading from the response JSON. Use `[rand]` to choose a random index. eg. `json_key, [rand], json_key_to_heading`",
                 icon = "",
                 default = "",
             ),
             schema.Text(
                 id = "body_response_path",
                 name = "JSON response path for body",
-                desc = "A comma separated path to the main body from the response JSON. eg. `json_key_1, 2, json_key_to_body`",
+                desc = "A comma separated path to the main body from the response JSON. Use `[rand]` to choose a random index. eg. `json_key, [rand], json_key_to_body`",
                 icon = "",
                 default = "",
             ),
             schema.Text(
                 id = "image_response_path",
                 name = "JSON response path for image URL",
-                desc = "A comma separated path to an image from the response JSON. eg. `json_key_1, 2, json_key_to_image_url`",
+                desc = "A comma separated path to an image from the response JSON. Use `[rand]` to choose a random index. eg. `json_key, [rand], json_key_to_image_url, 0`",
                 icon = "",
                 default = "",
             ),
@@ -497,6 +497,13 @@ def get_schema():
                 icon = "",
                 default = image_placement_options[1].value,
                 options = image_placement_options,
+            ),
+            schema.Toggle(
+                id = "rand_static",
+                name = "Keep same random number",
+                desc = "Keep the same random number across paths when using the `[rand]` keyword in response paths.",
+                icon = "",
+                default = True,
             ),
             schema.Text(
                 id = "heading_font_color",
@@ -511,13 +518,6 @@ def get_schema():
                 desc = "Body text color using Hex color codes. eg, `#FFFFFF`",
                 icon = "",
                 default = "#FFFFFF",
-            ),
-            schema.Toggle(
-                id = "rand_static",
-                name = "Same random number",
-                desc = "Keep random number the same across paths.",
-                icon = "",
-                default = True,
             ),
             schema.Dropdown(
                 id = "ttl_seconds",
