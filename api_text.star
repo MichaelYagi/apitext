@@ -6,7 +6,7 @@ Author: Michael Yagi
 """
 
 load("cache.star", "cache")
-load("animation.star", "animation")
+# load("animation.star", "animation")
 load("encoding/json.star", "json")
 load("http.star", "http")
 load("random.star", "random")
@@ -175,7 +175,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                             expanded = True,
                             main_align = "space_evenly",
                             cross_align = "center",
-                            children = [render.Image(src = img, height = 32)],
+                            children = [render.Image(src = img, width = 64)],
                         )
 
                         if image_placement == 1:
