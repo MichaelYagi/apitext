@@ -5,13 +5,18 @@ Description: Display text from an API endpoint.
 Author: Michael Yagi
 """
 
+load("cache.star", "cache")
 load("animation.star", "animation")
 load("encoding/json.star", "json")
 load("http.star", "http")
+load("random.star", "random")
 load("render.star", "render")
 load("schema.star", "schema")
+load("time.star", "time")
 
 def main(config):
+    random.seed(time.now().unix // 10)
+
     api_url = config.str("api_url", "")
     heading_response_path = config.get("heading_response_path", "")
     body_response_path = config.get("body_response_path", "")
@@ -22,6 +27,7 @@ def main(config):
     debug_output = config.bool("debug_output", False)
     image_placement = config.get("image_placement", 2)
     image_placement = int(image_placement)
+    rand_static = config.bool("rand_static", True)
     ttl_seconds = config.get("ttl_seconds", 20)
     ttl_seconds = int(ttl_seconds)
 
@@ -35,12 +41,13 @@ def main(config):
         print("CONFIG - request_headers: " + request_headers)
         print("CONFIG - heading_font_color: " + heading_font_color)
         print("CONFIG - body_font_color: " + body_font_color)
+        print("CONFIG - rand_static: " + str(rand_static))
         print("CONFIG - debug_output: " + str(debug_output))
         print("CONFIG - ttl_seconds: " + str(ttl_seconds))
 
-    return get_text(api_url, heading_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, heading_font_color, body_font_color, image_placement)
+    return get_text(api_url, heading_response_path, body_response_path, image_response_path, request_headers, debug_output, rand_static, ttl_seconds, heading_font_color, body_font_color, image_placement)
 
-def get_text(api_url, heading_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, heading_font_color, body_font_color, image_placement):
+def get_text(api_url, heading_response_path, body_response_path, image_response_path, request_headers, debug_output, rand_static, ttl_seconds, heading_font_color, body_font_color, image_placement):
     base_url = ""
     message = ""
 
@@ -90,7 +97,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                         print("Decoded JSON: " + outputStr)
 
                 # Parse response path for JSON
-                response_path_data_body = parse_response_path(output, body_response_path, debug_output)
+                response_path_data_body = parse_response_path(output, body_response_path, debug_output, rand_static, ttl_seconds)
                 output_body = response_path_data_body["output"]
                 body_parse_failure = response_path_data_body["failure"]
                 body_parse_message = response_path_data_body["message"]
@@ -98,7 +105,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                     print("Getting text body. Pass: " + str(body_parse_failure == False))
 
                 # Get heading
-                response_path_data_heading = parse_response_path(output, heading_response_path, debug_output)
+                response_path_data_heading = parse_response_path(output, heading_response_path, debug_output, rand_static, ttl_seconds)
                 output_heading = response_path_data_heading["output"]
                 heading_parse_failure = response_path_data_heading["failure"]
                 heading_parse_message = response_path_data_heading["message"]
@@ -106,7 +113,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                     print("Getting text heading. Pass: " + str(heading_parse_failure == False))
 
                 # Get image
-                response_path_data_image = parse_response_path(output, image_response_path, debug_output)
+                response_path_data_image = parse_response_path(output, image_response_path, debug_output, rand_static, ttl_seconds)
                 output_image = response_path_data_image["output"]
                 image_parse_failure = response_path_data_image["failure"]
                 image_parse_message = response_path_data_image["message"]
@@ -195,40 +202,40 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
 
                     # children_content = []
                     # if output_image_type != "gif":
-                    #     children_content = [
-                    #         render.Marquee(
-                    #             offset_start = 32,
-                    #             offset_end = 32,
-                    #             height = 32 * len(children),
-                    #             scroll_direction = "vertical",
-                    #             width = 64,
-                    #             child = render.Column(
-                    #                 children = children,
-                    #             ),
-                    #         ),
-                    #     ]
-                    # else:
                     children_content = [
-                        animation.Transformation(
-                            duration = int(total_lines/1.5),  # Scroll speed
-                            height = int(total_lines/1.3),
+                        render.Marquee(
+                            offset_start = 32,
+                            offset_end = 32,
+                            height = 32,
+                            scroll_direction = "vertical",
+                            width = 64,
                             child = render.Column(
                                 children = children,
                             ),
-                            keyframes = [
-                                animation.Keyframe(
-                                    percentage = 0,
-                                    transforms = [animation.Translate(0, 32)],
-                                    curve = "linear",
-                                ),
-                                animation.Keyframe(
-                                    percentage = 1,
-                                    transforms = [animation.Translate(0, -int(total_lines/1.5)-32)],
-                                    curve = "linear",
-                                ),
-                            ],
                         ),
                     ]
+                    # else:
+                    # children_content = [
+                    #     animation.Transformation(
+                    #         duration = int(total_lines/1.5),  # Scroll speed
+                    #         height = int(total_lines/1.3),
+                    #         child = render.Column(
+                    #             children = children,
+                    #         ),
+                    #         keyframes = [
+                    #             animation.Keyframe(
+                    #                 percentage = 0,
+                    #                 transforms = [animation.Translate(0, 32)],
+                    #                 curve = "linear",
+                    #             ),
+                    #             animation.Keyframe(
+                    #                 percentage = 1,
+                    #                 transforms = [animation.Translate(0, -int(total_lines/1.5)-32)],
+                    #                 curve = "linear",
+                    #             ),
+                    #         ],
+                    #     ),
+                    # ]
 
                     return render.Root(
                         delay = 100,
@@ -278,7 +285,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
         ),
     )
 
-def parse_response_path(output, responsePathStr, debug_output):
+def parse_response_path(output, responsePathStr, debug_output, rand_static, ttl_seconds):
     message = ""
     failure = False
 
@@ -287,7 +294,31 @@ def parse_response_path(output, responsePathStr, debug_output):
 
         for item in responsePathArray:
             item = item.strip()
-            if item.isdigit():
+
+            if item == "[rand]":
+                if type(output) == "list":
+                    if len(output) > 0:
+                        if rand_static == False:
+                            item = random.number(0, len(output) - 1)
+                        else:
+                            item = get_random_index(output, ttl_seconds)
+                    else:
+                        failure = True
+                        message = "Response path has empty list."
+                        if debug_output:
+                            print("responsePathArray invalid. Response path has empty list.")
+                        break
+
+                    if debug_output:
+                        print("Random index chosen " + str(item))
+                else:
+                    failure = True
+                    message = "Response path invalid. Use of [rand] only allowable in lists."
+                    if debug_output:
+                        print("responsePathArray invalid. Use of [rand] only allowable in lists.")
+                    break
+
+            if type(item) != "int" and item.isdigit():
                 item = int(item)
 
             if debug_output:
@@ -326,6 +357,15 @@ def parse_response_path(output, responsePathStr, debug_output):
         output = None
 
     return {"output": output, "failure": failure, "message": message}
+
+def get_random_index(a_list, ttl_seconds):
+    random_index = random.number(0, len(a_list) - 1)
+    cached_index = cache.get("random_index")
+    if cached_index:
+        return cached_index
+    else:
+        cache.set("random_index", str(random_index), ttl_seconds = ttl_seconds)
+        return random_index
 
 def get_data(url, debug_output, headerMap = {}, ttl_seconds = 20):
     if headerMap == {}:
@@ -471,6 +511,13 @@ def get_schema():
                 desc = "Body text color using Hex color codes. eg, `#FFFFFF`",
                 icon = "",
                 default = "#FFFFFF",
+            ),
+            schema.Toggle(
+                id = "rand_static",
+                name = "Same random number",
+                desc = "Keep random number the same across paths.",
+                icon = "",
+                default = True,
             ),
             schema.Dropdown(
                 id = "ttl_seconds",
