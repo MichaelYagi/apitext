@@ -1,4 +1,4 @@
-Testing and staging area before things get pushed to https://github.com/tidbyt/community/tree/main/apps/apiimage. Make sure to do an [advanced build of pixlet](https://tidbyt.dev/docs/build/advanced-installation) so you can run the commands below.
+Testing and staging area before things get pushed to https://github.com/tidbyt/community/tree/main/apps/apitext. Make sure to do an [advanced build of pixlet](https://tidbyt.dev/docs/build/advanced-installation) so you can run the commands below.
 
 After making changes:
 
