@@ -131,7 +131,6 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                     image_endpoint = ""
 
                     # Process image data
-                    # output_image_type = ""
                     if output_image != None and type(output_image) == "string" and base_url.startswith("http"):
                         if output_image.startswith("http") == False:
                             if output_image.startswith("/"):
@@ -141,36 +140,27 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                         image_endpoint = output_image
                         output_image_map = get_data(image_endpoint, debug_output, {}, ttl_seconds)
                         img = output_image_map["data"]
-                        # output_image_type = output_image_map["type"]
 
                         if img == None and debug_output:
                             print("Could not retrieve image")
 
                     # Append
                     # Get length of heading with 16 chars across
-                    heading_length = 0
                     if output_heading != None and type(output_heading) == "string":
-                        heading_length = len(output_heading)
                         children.append(render.WrappedText(content = output_heading, font = "tom-thumb", color = heading_font_color))
                     elif debug_output and heading_parse_failure == True:
                         message = "Heading " + heading_parse_message
-                        heading_length = len(message)
                         children.append(render.WrappedText(content = message, font = "tom-thumb", color = "#FF0000"))
 
                     # Append body
-                    body_length = 0
                     if output_body != None and type(output_body) == "string":
-                        body_length = len(output_body)
                         children.append(render.WrappedText(content = output_body, font = "tom-thumb", color = body_font_color))
                     elif debug_output and body_parse_failure == True:
                         message = "Body " + body_parse_message
-                        body_length = len(message)
                         children.append(render.WrappedText(content = message, font = "tom-thumb", color = "#FF0000"))
 
                     # Insert image according to placement
-                    image_height = 0
                     if img != None:
-                        image_height = 32
                         row = render.Row(
                             expanded = True,
                             main_align = "space_evenly",
@@ -180,28 +170,21 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
 
                         if image_placement == 1:
                             children.insert(0, row)
-                         elif image_placement == 3:
+                        elif image_placement == 3:
                             children.append(row)
                         elif len(children) > 0:
                             children.insert(len(children) - 1, row)
                         elif len(children) == 0:
                             children.append(row)
-                    elif len(image_response_path) > 0 and output_image == None and debug_output:
-                        if len(image_endpoint) > 0:
-                            print("Image URL found but failed to render URL " + image_endpoint)
-                        else:
-                            print("No image URL found")
+                        elif len(image_response_path) > 0 and output_image == None and debug_output:
+                            if len(image_endpoint) > 0:
+                                print("Image URL found but failed to render URL " + image_endpoint)
+                            else:
+                                print("No image URL found")
 
                         if image_parse_failure == True:
                             children.append(render.WrappedText(content = "Image " + image_parse_message, font = "tom-thumb", color = "#FF0000"))
 
-                    # total_lines = image_height + heading_length + body_length
-                    # total_lines = int(total_lines)
-                    # if debug_output:
-                    #     print("Total number of lines: " + str(total_lines))
-
-                    # children_content = []
-                    # if output_image_type != "gif":
                     children_content = [
                         render.Marquee(
                             offset_start = 32,
@@ -214,28 +197,6 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                             ),
                         ),
                     ]
-                    # else:
-                    # children_content = [
-                    #     animation.Transformation(
-                    #         duration = int(total_lines/1.5),  # Scroll speed
-                    #         height = int(total_lines/1.3),
-                    #         child = render.Column(
-                    #             children = children,
-                    #         ),
-                    #         keyframes = [
-                    #             animation.Keyframe(
-                    #                 percentage = 0,
-                    #                 transforms = [animation.Translate(0, 32)],
-                    #                 curve = "linear",
-                    #             ),
-                    #             animation.Keyframe(
-                    #                 percentage = 1,
-                    #                 transforms = [animation.Translate(0, -int(total_lines/1.5)-32)],
-                    #                 curve = "linear",
-                    #             ),
-                    #         ],
-                    #     ),
-                    # ]
 
                     return render.Root(
                         delay = 100,
@@ -492,7 +453,7 @@ def get_schema():
             ),
             schema.Dropdown(
                 id = "image_placement",
-                name = "Set the image placement.",
+                name = "Set the image placement",
                 desc = "Determine where you see the image during scrolling.",
                 icon = "",
                 default = image_placement_options[1].value,
@@ -500,7 +461,7 @@ def get_schema():
             ),
             schema.Toggle(
                 id = "rand_static",
-                name = "Keep same random number across paths",
+                name = "Random number same across paths",
                 desc = "Keep the same random number across response paths when using the `[rand]` keyword.",
                 icon = "",
                 default = True,
