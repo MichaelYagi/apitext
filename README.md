@@ -47,6 +47,6 @@ JSON Response path for image URL: ```entities,[rand],images,0```
 
 Keep same random number across paths: ```On```
 
-* Note the [rand] keyword chooses from a random index according to the list length. Turning on ```Keep same random number across paths``` ensures you can use the same random number between the heading, body and image paths. Ideal if the paths contain the same parent, as demonstrated in the example above.
+* Note the [rand] keyword chooses from a random index according to the list length. Turning on ```Keep same random number across paths``` ensures you can use the same random number between the heading, body and image paths. Ideal if the paths are the same parent, as demonstrated in the example above.
 
 ![Bird pics](https://michaelyagi.github.io/images/api_text_3.gif)
