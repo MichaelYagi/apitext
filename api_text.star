@@ -180,7 +180,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
 
                         if image_placement == 1:
                             children.insert(0, row)
-                        elif image_placement == 3:
+                         elif image_placement == 3:
                             children.append(row)
                         elif len(children) > 0:
                             children.insert(len(children) - 1, row)
@@ -195,10 +195,10 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                         if image_parse_failure == True:
                             children.append(render.WrappedText(content = "Image " + image_parse_message, font = "tom-thumb", color = "#FF0000"))
 
-                    total_lines = image_height + heading_length + body_length
-                    total_lines = int(total_lines)
-                    if debug_output:
-                        print("Total number of lines: " + str(total_lines))
+                    # total_lines = image_height + heading_length + body_length
+                    # total_lines = int(total_lines)
+                    # if debug_output:
+                    #     print("Total number of lines: " + str(total_lines))
 
                     # children_content = []
                     # if output_image_type != "gif":
