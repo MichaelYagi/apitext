@@ -2,9 +2,9 @@ Testing and staging area before things get pushed to https://github.com/tidbyt/c
 
 After making changes:
 
-* Create a fork and run ```lint```,```format```, and ```check``` before commiting your changes
+* Create a fork and run ```lint```,```format```, and ```check``` before commiting your changes for review
 * Once review passes, create fork of https://github.com/tidbyt/community/tree/main
-* Copy api_image.star file to forked apps/apitext/api_text and push changes to fork for review
+* Copy api_image.star file to forked apps/apitext/api_text, run formatter/linter and push changes to fork for review
 * Create a PR if automated tests pass
 
 Example usages:
