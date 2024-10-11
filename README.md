@@ -43,4 +43,6 @@ JSON Response path for heading: ```entities,[rand],sciName```
 
 JSON Response path for image URL: ```entities,[rand],images,0```
 
+Keep same random number across paths: ```On```
+
 ![Bird pics](https://michaelyagi.github.io/images/api_text_3.gif)
