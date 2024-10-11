@@ -27,7 +27,7 @@ Body text color: ```#0000FF```
 
 API URL: ```https://newsdata.io/api/1/latest?apikey=<api_key>&country=us&category=technology```
 
-JSON Response path for heading: ```results,2,title"```
+JSON Response path for heading: ```results,2,title```
 
 JSON Response path for heading: ```results,2,description```
 
