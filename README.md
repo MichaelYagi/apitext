@@ -1,4 +1,4 @@
-This is one of my apps for the TidByt. You can pull info from an endpoint that serves text or a JSON feed. Things like news feeds are an ideal use.
+This is one of my apps for the TidByt. You can pull info from an endpoint that serves text or JSON. Things like news feeds are an ideal use.
 
 This repo is intended as a testing and staging area before things get pushed to https://github.com/tidbyt/community/tree/main/apps/apitext. Make sure to do an [advanced build of pixlet](https://tidbyt.dev/docs/build/advanced-installation) so you can run the commands below.
 
