@@ -17,7 +17,7 @@ API URL: ```https://official-joke-api.appspot.com/random_joke```
 
 JSON Response path for heading: ```setup```
 
-JSON Response path for heading: ```punchline```
+JSON Response path for body: ```punchline```
 
 Body text color: ```#0000FF```
 
@@ -29,7 +29,7 @@ API URL: ```https://newsdata.io/api/1/latest?apikey=<api_key>&country=us&categor
 
 JSON Response path for heading: ```results,2,title```
 
-JSON Response path for heading: ```results,2,description```
+JSON Response path for body: ```results,2,description```
 
 ![Tech news](https://michaelyagi.github.io/images/api_text_2.gif)
 
@@ -41,7 +41,7 @@ Request headers: ```api-key:<api_key>```
 
 JSON Response path for heading: ```entities,[rand],name```
 
-JSON Response path for heading: ```entities,[rand],sciName```
+JSON Response path for body: ```entities,[rand],sciName```
 
 JSON Response path for image URL: ```entities,[rand],images,0```
 
