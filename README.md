@@ -4,7 +4,7 @@ After making changes:
 
 * Create a fork and run ```lint```,```format```, and ```check``` before commiting your changes for review
 * Once review passes, create fork of https://github.com/tidbyt/community/tree/main
-* Copy api_image.star file to forked apps/apitext/api_text, run formatter/linter and push changes to fork for review
+* Copy api_text.star file to forked apps/apitext/api_text, run formatter/linter and push changes to fork for review
 * Create a PR if automated tests pass
 
 Example usages:
