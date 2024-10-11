@@ -2,7 +2,7 @@ Testing and staging area before things get pushed to https://github.com/tidbyt/c
 
 After making changes:
 
-* Run ```format```, ```render``` and ```check``` and commit to this repo
+* Create a fork and run ```lint```,```format```, and ```check``` before commiting your changes
 * Create fork of https://github.com/tidbyt/community/tree/main
 * Copy api_image.star file to forked apps/apitext/api_text and push changes to fork for review
 * Create a PR if automated tests pass
