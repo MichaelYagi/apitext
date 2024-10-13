@@ -39,11 +39,11 @@ API URL: ```https://nuthatch.lastelm.software/v2/birds```
 
 Request headers: ```api-key:<api_key>```
 
-JSON Response path for heading: ```entities,[rand],name```
+JSON Response path for heading: ```entities,[rand1],name```
 
-JSON Response path for body: ```entities,[rand],sciName```
+JSON Response path for body: ```entities,[rand1],sciName```
 
-JSON Response path for image URL: ```entities,[rand],images,0```
+JSON Response path for image URL: ```entities,[rand1],images,[rand]```
 
 Keep same random number across paths: ```On```
 
