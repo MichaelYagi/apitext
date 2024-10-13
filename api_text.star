@@ -75,7 +75,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                     headerMap[headerKeyValueArray[0].strip()] = headerKeyValueArray[1].strip()
 
         # Get API content
-        output_map = get_data(api_url, debug_output, headerMap, ttl_seconds)
+        output_map = get_data(api_url, debug_output, headerMap)
         output_content = output_map["data"]
         output_type = output_map["type"]
 
@@ -144,7 +144,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                             else:
                                 output_image = base_url + "/" + output_image
                         image_endpoint = output_image
-                        output_image_map = get_data(image_endpoint, debug_output, {}, ttl_seconds)
+                        output_image_map = get_data(image_endpoint, debug_output, {})
                         img = output_image_map["data"]
 
                         if img == None and debug_output:
