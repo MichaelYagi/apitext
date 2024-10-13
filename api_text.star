@@ -25,8 +25,6 @@ def main(config):
     debug_output = config.bool("debug_output", False)
     image_placement = config.get("image_placement", 2)
     image_placement = int(image_placement)
-    ttl_seconds = config.get("ttl_seconds", 20)
-    ttl_seconds = int(ttl_seconds)
 
     if debug_output:
         print("------------------------------")
@@ -39,11 +37,10 @@ def main(config):
         print("CONFIG - heading_font_color: " + heading_font_color)
         print("CONFIG - body_font_color: " + body_font_color)
         print("CONFIG - debug_output: " + str(debug_output))
-        print("CONFIG - ttl_seconds: " + str(ttl_seconds))
 
-    return get_text(api_url, heading_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, heading_font_color, body_font_color, image_placement)
+    return get_text(api_url, heading_response_path, body_response_path, image_response_path, request_headers, debug_output, heading_font_color, body_font_color, image_placement)
 
-def get_text(api_url, heading_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, heading_font_color, body_font_color, image_placement):
+def get_text(api_url, heading_response_path, body_response_path, image_response_path, request_headers, debug_output, heading_font_color, body_font_color, image_placement):
     random_indexes = {
         "[rand0]": -1,
         "[rand1]": -1,
@@ -408,33 +405,6 @@ def get_data(url, debug_output, headerMap = {}, ttl_seconds = 20):
     return {"data": None, "type": contentType}
 
 def get_schema():
-    ttl_options = [
-        schema.Option(
-            display = "5 sec",
-            value = "5",
-        ),
-        schema.Option(
-            display = "20 sec",
-            value = "20",
-        ),
-        schema.Option(
-            display = "1 min",
-            value = "60",
-        ),
-        schema.Option(
-            display = "15 min",
-            value = "900",
-        ),
-        schema.Option(
-            display = "1 hour",
-            value = "3600",
-        ),
-        schema.Option(
-            display = "24 hours",
-            value = "86400",
-        ),
-    ]
-
     image_placement_options = [
         schema.Option(
             display = "First",
@@ -509,14 +479,6 @@ def get_schema():
                 desc = "Body text color using Hex color codes. eg, `#FFFFFF`",
                 icon = "",
                 default = "#FFFFFF",
-            ),
-            schema.Dropdown(
-                id = "ttl_seconds",
-                name = "Refresh rate",
-                desc = "Refresh data at the specified interval. Useful for when an endpoint serves random texts.",
-                icon = "",
-                default = ttl_options[1].value,
-                options = ttl_options,
             ),
             schema.Toggle(
                 id = "debug_output",
