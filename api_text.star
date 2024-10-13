@@ -364,7 +364,6 @@ def parse_response_path(output, responsePathStr, random_indexes, debug_output, t
     return {"output": output, "failure": failure, "message": message}
 
 def get_random_index(item, random_indexes, a_list, debug_output, ttl_seconds):
-    random_index = random.number(0, len(a_list) - 1)
     cached_index = cache.get(item)
 
     if cached_index:
@@ -372,6 +371,7 @@ def get_random_index(item, random_indexes, a_list, debug_output, ttl_seconds):
             print("Using cached value: " + str(cached_index))
         return cached_index
     elif random_indexes[item] == -1:  # Not set
+        random_index = random.number(0, len(a_list) - 1)
         if debug_output:
             print("Setting cached value: " + str(random_index))
         random_indexes[item] = random_index
