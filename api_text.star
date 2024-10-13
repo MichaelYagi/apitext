@@ -6,11 +6,9 @@ Author: Michael Yagi
 """
 
 load("cache.star", "cache")
-# load("animation.star", "animation")
 load("encoding/json.star", "json")
 load("http.star", "http")
 load("random.star", "random")
-load("re.star", "re")
 load("render.star", "render")
 load("schema.star", "schema")
 load("time.star", "time")
@@ -280,9 +278,16 @@ def parse_response_path(output, responsePathStr, debug_output, ttl_seconds):
         for item in responsePathArray:
             item = item.strip()
 
-            rand_pattern = re.findall("\\[rand\\d*\\]", item)
+            valid_rand = False
+            if item == "[rand]":
+                valid_rand = True
+                
+            for x in range(10):
+                if item == "[rand"+str(x)+"]":
+                    valid_rand = True
+                    break
 
-            if len(rand_pattern) > 0:
+            if valid_rand:
                 if type(output) == "list":
                     if len(output) > 0:
                         if item == "[rand]":
@@ -459,21 +464,21 @@ def get_schema():
             schema.Text(
                 id = "heading_response_path",
                 name = "JSON response path for heading",
-                desc = "A comma separated path to the heading from the response JSON. Use `[randX]` to choose a random index, where X is a number to use as a label across paths. eg. `json_key, [rand1], json_key_to_heading`",
+                desc = "A comma separated path to the heading from the response JSON. Use `[randX]` to choose a random index, where X is a number between 0-9 to use as a label across paths. eg. `json_key, [rand1], json_key_to_heading`",
                 icon = "",
                 default = "",
             ),
             schema.Text(
                 id = "body_response_path",
                 name = "JSON response path for body",
-                desc = "A comma separated path to the main body from the response JSON. Use `[randX]` to choose a random index, where X is a number to use as a label across paths. eg. `json_key, [rand1], json_key_to_body`",
+                desc = "A comma separated path to the main body from the response JSON. Use `[randX]` to choose a random index, where X is a number between 0-9 to use as a label across paths. eg. `json_key, [rand1], json_key_to_body`",
                 icon = "",
                 default = "",
             ),
             schema.Text(
                 id = "image_response_path",
                 name = "JSON response path for image URL",
-                desc = "A comma separated path to an image from the response JSON. Use `[randX]` to choose a random index, where X is a number to use as a label across paths. eg. `json_key, [rand1], json_key_to_image_url, [rand2|rand]`",
+                desc = "A comma separated path to an image from the response JSON. Use `[randX]` to choose a random index, where X is a number between 0-9 to use as a label across paths. eg. `json_key, [rand1], json_key_to_image_url, [rand2|rand]`",
                 icon = "",
                 default = "",
             ),
