@@ -106,7 +106,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                         print("Decoded JSON: " + outputStr)
 
                 # Parse response path for JSON
-                response_path_data_body = parse_response_path(output, body_response_path, random_indexes, debug_output, ttl_seconds)
+                response_path_data_body = parse_response_path(output, body_response_path, random_indexes, debug_output)
                 output_body = response_path_data_body["output"]
                 body_parse_failure = response_path_data_body["failure"]
                 body_parse_message = response_path_data_body["message"]
@@ -114,7 +114,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                     print("Getting text body. Pass: " + str(body_parse_failure == False))
 
                 # Get heading
-                response_path_data_heading = parse_response_path(output, heading_response_path, random_indexes, debug_output, ttl_seconds)
+                response_path_data_heading = parse_response_path(output, heading_response_path, random_indexes, debug_output)
                 output_heading = response_path_data_heading["output"]
                 heading_parse_failure = response_path_data_heading["failure"]
                 heading_parse_message = response_path_data_heading["message"]
@@ -122,7 +122,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                     print("Getting text heading. Pass: " + str(heading_parse_failure == False))
 
                 # Get image
-                response_path_data_image = parse_response_path(output, image_response_path, random_indexes,debug_output, ttl_seconds)
+                response_path_data_image = parse_response_path(output, image_response_path, random_indexes,debug_output)
                 output_image = response_path_data_image["output"]
                 image_parse_failure = response_path_data_image["failure"]
                 image_parse_message = response_path_data_image["message"]
@@ -280,7 +280,7 @@ def calculate_lines(text):
 
     return breaks+1
 
-def parse_response_path(output, responsePathStr, random_indexes, debug_output, ttl_seconds):
+def parse_response_path(output, responsePathStr, random_indexes, debug_output):
     message = ""
     failure = False
 
