@@ -5,7 +5,6 @@ Description: Display text from an API endpoint.
 Author: Michael Yagi
 """
 
-load("cache.star", "cache")
 load("encoding/json.star", "json")
 load("http.star", "http")
 load("random.star", "random")
@@ -45,6 +44,19 @@ def main(config):
     return get_text(api_url, heading_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, heading_font_color, body_font_color, image_placement)
 
 def get_text(api_url, heading_response_path, body_response_path, image_response_path, request_headers, debug_output, ttl_seconds, heading_font_color, body_font_color, image_placement):
+    random_indexes = {
+        "[rand0]": -1,
+        "[rand1]": -1,
+        "[rand2]": -1,
+        "[rand3]": -1,
+        "[rand4]": -1,
+        "[rand5]": -1,
+        "[rand6]": -1,
+        "[rand7]": -1,
+        "[rand8]": -1,
+        "[rand9]": -1
+    }
+
     base_url = ""
     message = ""
 
@@ -94,7 +106,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                         print("Decoded JSON: " + outputStr)
 
                 # Parse response path for JSON
-                response_path_data_body = parse_response_path(output, body_response_path, debug_output, ttl_seconds)
+                response_path_data_body = parse_response_path(output, body_response_path, random_indexes, debug_output, ttl_seconds)
                 output_body = response_path_data_body["output"]
                 body_parse_failure = response_path_data_body["failure"]
                 body_parse_message = response_path_data_body["message"]
@@ -102,7 +114,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                     print("Getting text body. Pass: " + str(body_parse_failure == False))
 
                 # Get heading
-                response_path_data_heading = parse_response_path(output, heading_response_path, debug_output, ttl_seconds)
+                response_path_data_heading = parse_response_path(output, heading_response_path, random_indexes, debug_output, ttl_seconds)
                 output_heading = response_path_data_heading["output"]
                 heading_parse_failure = response_path_data_heading["failure"]
                 heading_parse_message = response_path_data_heading["message"]
@@ -110,7 +122,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                     print("Getting text heading. Pass: " + str(heading_parse_failure == False))
 
                 # Get image
-                response_path_data_image = parse_response_path(output, image_response_path, debug_output, ttl_seconds)
+                response_path_data_image = parse_response_path(output, image_response_path, random_indexes,debug_output, ttl_seconds)
                 output_image = response_path_data_image["output"]
                 image_parse_failure = response_path_data_image["failure"]
                 image_parse_message = response_path_data_image["message"]
@@ -268,7 +280,7 @@ def calculate_lines(text):
 
     return breaks+1
 
-def parse_response_path(output, responsePathStr, debug_output, ttl_seconds):
+def parse_response_path(output, responsePathStr, random_indexes, debug_output, ttl_seconds):
     message = ""
     failure = False
 
@@ -292,8 +304,11 @@ def parse_response_path(output, responsePathStr, debug_output, ttl_seconds):
                     if len(output) > 0:
                         if item == "[rand]":
                             item = random.number(0, len(output) - 1)
-                        else:
-                            item = get_random_index(item, output, ttl_seconds)
+                        elif random_indexes[item] == -1: # Not set
+                            random_indexes[item] = random.number(0, len(output) - 1)
+                            item = random_indexes[item]
+                        elif random_indexes[item] > -1: # Already set
+                            item = random_indexes[item]
                     else:
                         failure = True
                         message = "Response path has empty list for "+item+"."
@@ -349,15 +364,6 @@ def parse_response_path(output, responsePathStr, debug_output, ttl_seconds):
         output = None
 
     return {"output": output, "failure": failure, "message": message}
-
-def get_random_index(item, a_list, ttl_seconds):
-    random_index = random.number(0, len(a_list) - 1)
-    cached_index = cache.get(item)
-    if cached_index:
-        return cached_index
-    else:
-        cache.set(item, str(random_index), ttl_seconds = ttl_seconds)
-        return random_index
 
 def get_data(url, debug_output, headerMap = {}, ttl_seconds = 20):
     if headerMap == {}:
