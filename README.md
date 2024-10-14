@@ -1,13 +1,6 @@
 This is one of my apps for the TidByt. You can pull info from an endpoint that serves text or JSON. Things like news feeds are an ideal use.
 
-This repo is intended as a testing and staging area before things get pushed to https://github.com/tidbyt/community/tree/main/apps/apitext. Make sure to do an [advanced build of pixlet](https://tidbyt.dev/docs/build/advanced-installation) so you can run the commands below.
-
-After making changes:
-
-* Create a fork and run ```lint```,```format```, and ```check``` before commiting your changes for review
-* Once review passes, create fork of https://github.com/tidbyt/community/tree/main
-* Copy api_text.star file to forked apps/apitext/api_text, run formatter/linter and push changes to fork for review
-* Create a PR if automated tests pass
+This repo is intended as a testing and staging area before things get pushed to https://github.com/tidbyt/community/tree/main/apps/apitext.
 
 Example usages:
 
