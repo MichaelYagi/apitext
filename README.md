@@ -24,6 +24,8 @@ JSON Response path for heading: ```results,2,title```
 
 JSON Response path for body: ```results,2,description```
 
+JSON Response path for image: ```results,2,image_url```
+
 ![Tech news](https://michaelyagi.github.io/images/api_text_2.gif)
 
 -----
@@ -36,7 +38,7 @@ JSON Response path for heading: ```entities,[rand1],name```
 
 JSON Response path for body: ```entities,[rand1],sciName```
 
-JSON Response path for image URL: ```entities,[rand1],images,[rand]```
+JSON Response path for image: ```entities,[rand1],images,[rand]```
 
 * Note the [rand] keyword chooses from a random index each time it's called according to the list length. However, calling ```[randX]```, where ```X``` is a number between 0-9, ensures you can use the same random number between the heading, body and image paths. Ideal if the paths have the same parent, as demonstrated in the example above.
 
