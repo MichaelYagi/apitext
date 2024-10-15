@@ -18,7 +18,9 @@ Body text color: ```#0000FF```
 
 -----
 
-API URL: ```https://newsdata.io/api/1/latest?apikey=<api_key>&country=us&category=technology```
+API URL: ```https://newsdata.io/api/1/latest?country=us&category=technology```
+
+Request headers: ```X-ACCESS-KEY:<api_key>```
 
 JSON Response path for heading: ```results,2,title```
 
