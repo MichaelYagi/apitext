@@ -471,7 +471,7 @@ def get_schema():
             value = "1",
         ),
         schema.Option(
-            display = "After heading/Before body",
+            display = "Middle",
             value = "2",
         ),
         schema.Option(
