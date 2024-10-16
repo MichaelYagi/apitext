@@ -56,4 +56,6 @@ JSON Response path for body: ```data,movies,[rand1],summary```
 
 JSON Response path for image: ```data,movies,[rand1],medium_cover_image```
 
+Set the image placement: ```Left'''
+
 ![yuma_movie](https://michaelyagi.github.io/images/api_text_4.gif)
