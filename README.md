@@ -45,3 +45,15 @@ JSON Response path for image: ```entities,[rand1],images,[rand]```
 * Note the [rand] keyword chooses from a random index each time it's called according to the list length. However, calling ```[randX]```, where ```X``` is a number between 0-9, ensures you can use the same random number between the heading, body and image paths. Ideal if the paths have the same parent, as demonstrated in the example above.
 
 ![Bird pics](https://michaelyagi.github.io/images/api_text_3.gif)
+
+-----
+
+API URL: ```<some_movie_api>``` 
+
+JSON Response path for heading: ```data,movies,[rand1],title```
+
+JSON Response path for body: ```data,movies,[rand1],summary```
+
+JSON Response path for image: ```data,movies,[rand1],medium_cover_image```
+
+![yuma_movie](https://michaelyagi.github.io/images/api_text_4.gif)
