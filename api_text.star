@@ -160,6 +160,7 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                         children.append(render.WrappedText(content = message, font = "tom-thumb", color = "#FF0000"))
 
                     # Insert image according to placement
+                    image = None
                     if img != None:
                         test = render.Image(src = img, width = 64)
                         row = render.Row(
@@ -169,22 +170,29 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                             children = [test],
                         )
 
-                        if image_placement == 1:
-                            children.insert(0, row)
-                        elif image_placement == 3:
-                            children.append(row)
-                        elif len(children) > 0:
-                            children.insert(len(children) - 1, row)
-                        elif len(children) == 0:
-                            children.append(row)
+                        if image_parse_failure == True:
+                            children.append(render.WrappedText(content = "Image " + image_parse_message, font = "tom-thumb", color = "#FF0000"))
                         elif len(image_response_path) > 0 and output_image == None and debug_output:
                             if len(image_endpoint) > 0:
                                 print("Image URL found but failed to render URL " + image_endpoint)
                             else:
                                 print("No image URL found")
-
-                        if image_parse_failure == True:
-                            children.append(render.WrappedText(content = "Image " + image_parse_message, font = "tom-thumb", color = "#FF0000"))
+                        elif image_placement == 4:
+                            image = render.Image(src = img, width = 23)
+                        else:
+                            if image_placement == 1:
+                                children.insert(0, row)
+                            elif image_placement == 3:
+                                children.append(row)
+                            elif len(children) > 0:
+                                children.insert(len(children) - 1, row)
+                            elif len(children) == 0:
+                                children.append(row)
+                            elif len(image_response_path) > 0 and output_image == None and debug_output:
+                                if len(image_endpoint) > 0:
+                                    print("Image URL found but failed to render URL " + image_endpoint)
+                                else:
+                                    print("No image URL found")  
 
                     height = 32 + ((heading_lines + body_lines) - ((heading_lines + body_lines) * 0.52))
 
@@ -193,18 +201,33 @@ def get_text(api_url, heading_response_path, body_response_path, image_response_
                         print("body_lines: " + str(body_lines))
                         print("Marquee height: " + str(height))
 
-                    children_content = [
-                        render.Marquee(
-                            offset_start = 32,
-                            offset_end = 32,
-                            height = int(height),
-                            scroll_direction = "vertical",
-                            width = 64,
-                            child = render.Column(
-                                children = children,
+                    if image != None and image_placement == 4:
+                        children_content = [
+                            render.Image(src = img, width = 23),
+                            render.Marquee(
+                                offset_start = 32,
+                                offset_end = 32,
+                                height = int(height),
+                                scroll_direction = "vertical",
+                                width = 41,
+                                child = render.Column(
+                                    children = children,
+                                ),
+                            )
+                        ]
+                    else:
+                        children_content = [
+                            render.Marquee(
+                                offset_start = 32,
+                                offset_end = 32,
+                                height = int(height),
+                                scroll_direction = "vertical",
+                                width = 64,
+                                child = render.Column(
+                                    children = children,
+                                ),
                             ),
-                        ),
-                    ]
+                        ]
 
                     return render.Root(
                         delay = 100,
@@ -446,6 +469,10 @@ def get_schema():
         schema.Option(
             display = "Last",
             value = "3",
+        ),
+        schema.Option(
+            display = "Left",
+            value = "4",
         ),
     ]
 
