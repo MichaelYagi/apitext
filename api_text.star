@@ -158,7 +158,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                             else:
                                 print("No image URL found")
                         elif image_placement == 4:
-                            rendered_image = render.Image(src = img, width = 23)
+                            rendered_image = render.Image(src = img, width = 22)
 
                     # Append heading
                     heading_lines = 0
@@ -220,16 +220,23 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
 
                     if rendered_image != None and image_placement == 4:
                         children_content = [
-                            render.Image(src = img, width = 23),
-                            render.Marquee(
-                                offset_start = 32,
-                                offset_end = 32,
-                                height = int(height),
-                                scroll_direction = "vertical",
-                                width = 41,
+                            rendered_image,
+                            render.Padding(
+                                pad = (1, 0, 0, 0),
                                 child = render.Column(
-                                    children = children,
-                                ),
+                                    children = [
+                                        render.Marquee(
+                                            offset_start = 32,
+                                            offset_end = 32,
+                                            height = int(height),
+                                            scroll_direction = "vertical",
+                                            width = 41,
+                                            child = render.Column(
+                                                children = children,
+                                            ),
+                                        )
+                                    ]
+                                )
                             )
                         ]
                     else:
