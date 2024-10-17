@@ -50,14 +50,16 @@ JSON Response path for image: ```entities,[rand1],images,[rand]```
 
 -----
 
-API URL: ```<some_movie_api>``` 
+API URL: ```https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&api_key=<api_key>``` 
 
-JSON Response path for heading: ```data,movies,[rand1],title```
+JSON Response path for heading: ```results,[rand1],original_title```
 
-JSON Response path for body: ```data,movies,[rand1],summary```
+JSON Response path for body: ```results,[rand1],overview```
 
-JSON Response path for image: ```data,movies,[rand1],medium_cover_image```
+JSON Response path for image: ```results,[rand1],poster_path```
 
 Set the image placement: ```Left```
+
+Base URL: ```https://image.tmdb.org/x/y/w500```
 
 ![Yuma_movie](https://michaelyagi.github.io/images/api_text_4.gif)
