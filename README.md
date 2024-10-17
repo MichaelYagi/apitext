@@ -60,4 +60,4 @@ JSON Response path for image: ```data,movies,[rand1],medium_cover_image```
 
 Set the image placement: ```Left```
 
-
+![Yuma_movie](https://michaelyagi.github.io/images/api_text_4.gif)
