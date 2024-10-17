@@ -150,14 +150,6 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                     # Insert image according to placement
                     image = None
                     if img != None:
-                        test = render.Image(src = img, width = 64)
-                        row = render.Row(
-                            expanded = True,
-                            main_align = "space_evenly",
-                            cross_align = "center",
-                            children = [test],
-                        )
-
                         if image_parse_failure == True:
                             children.append(render.WrappedText(content = "Image " + image_parse_message, font = "tom-thumb", color = "#FF0000"))
                         elif len(image_response_path) > 0 and output_image == None and debug_output:
@@ -193,6 +185,14 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                         children.append(render.WrappedText(content = message, font = "tom-thumb", color = "#FF0000"))
 
                     if img != None and image_placement != 4:
+                        image_render = render.Image(src = img, width = 64)
+                        row = render.Row(
+                            expanded = True,
+                            main_align = "space_evenly",
+                            cross_align = "center",
+                            children = [image_render],
+                        )
+
                         if image_placement == 1:
                             children.insert(0, row)
                         elif image_placement == 3:
