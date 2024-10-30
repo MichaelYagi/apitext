@@ -325,7 +325,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
             main_align = "space_evenly",
             cross_align = "center",
             children = [
-                render.WrappedText(content = message, font = "tom-thumb"),
+                render.WrappedText(content = message, font = "tom-thumb", color = "#FF0000"),
             ],
         )
 
