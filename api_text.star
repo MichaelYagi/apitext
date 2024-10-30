@@ -74,6 +74,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
         output_map = get_data(api_url, debug_output, headerMap, ttl_seconds)
         output_content = output_map["data"]
         output_type = output_map["type"]
+        children = []
 
         if output_content != None and (output_type == "text" or (output_type == "json" and (len(heading_response_path) > 0 or len(body_response_path) > 0 or len(image_response_path) > 0))):
             # api_url_array = api_url.split("/")
@@ -105,6 +106,8 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                 body_parse_message = response_path_data_body["message"]
                 if debug_output:
                     print("Getting text body. Pass: " + str(body_parse_failure == False))
+                    if body_parse_failure:
+                        children.append(render.WrappedText(content = body_parse_message, font = "tom-thumb", color = "#FF0000"))
 
                 # Get heading
                 response_path_data_heading = parse_response_path(output, heading_response_path, debug_output, ttl_seconds)
@@ -113,6 +116,8 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                 heading_parse_message = response_path_data_heading["message"]
                 if debug_output:
                     print("Getting text heading. Pass: " + str(heading_parse_failure == False))
+                    if heading_parse_failure:
+                        children.append(render.WrappedText(content = heading_parse_message, font = "tom-thumb", color = "#FF0000"))
 
                 # Get image
                 response_path_data_image = parse_response_path(output, image_response_path, debug_output, ttl_seconds)
@@ -121,6 +126,8 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                 image_parse_message = response_path_data_image["message"]
                 if debug_output:
                     print("Getting image. Pass: " + str(image_parse_failure == False))
+                    if image_parse_failure:
+                        children.append(render.WrappedText(content = image_parse_message, font = "tom-thumb", color = "#FF0000"))
 
                 if (body_parse_failure == False and output_body != None) or (heading_parse_failure == False and output_heading != None) or (image_parse_failure == False and output_image != None):
                     if type(output_body) == "string":
@@ -128,7 +135,6 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                     if type(output_heading) == "string":
                         output_heading = output_heading.replace("\n", "").replace("\\", "")
 
-                    children = []
                     img = None
                     image_endpoint = ""
 
@@ -234,8 +240,10 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                         elif len(image_response_path) > 0 and output_image == None and debug_output:
                             if len(image_endpoint) > 0:
                                 print("Image URL found but failed to render URL " + image_endpoint)
+                                children.append(render.WrappedText(content = "Image URL found but failed to render URL " + image_endpoint, font = "tom-thumb", color = "#FF0000"))
                             else:
-                                print("No image URL found")  
+                                print("No image URL found")
+                                children.append(render.WrappedText(content = "No image URL found", font = "tom-thumb", color = "#FF0000"))
 
                     height = 32 + ((heading_lines + body_lines) - ((heading_lines + body_lines) * 0.52))
 
