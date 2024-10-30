@@ -135,9 +135,10 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                     # Process image data
                     if output_image != None and type(output_image) == "string":
                         if output_image.startswith("http") == False and (base_url == "" or base_url.startswith("http") == False):
-                            message = "Base URL required"
+                            message = "Base URL required for image"
                             if debug_output:
-                                print("Invalid URL. Requires a base_url")
+                                children.append(render.WrappedText(content = message, font = "tom-thumb", color = "#FF0000"))
+                                print("Invalid image URL. Requires a base url")
                         else:
                             if output_image.startswith("http") == False:
                                 if output_image.startswith("/"):
