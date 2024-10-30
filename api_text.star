@@ -138,7 +138,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                             message = "Base URL required for image"
                             if debug_output:
                                 children.append(render.WrappedText(content = message, font = "tom-thumb", color = "#FF0000"))
-                                print("Invalid image URL. Requires a base url")
+                                print(message)
                         else:
                             if output_image.startswith("http") == False:
                                 if output_image.startswith("/"):
@@ -150,7 +150,9 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                             img = output_image_map["data"]
 
                             if img == None and debug_output:
-                                print("Could not retrieve image")
+                                message = "Could not retrieve image"
+                                print(message)
+                                children.append(render.WrappedText(content = message, font = "tom-thumb", color = "#FF0000"))
 
                     # Insert image according to placement if image on left
                     rendered_image = None
