@@ -368,10 +368,11 @@ def wrap_line(line, line_length):
     cur_line_length = 0
     str_builder = ""
 
+    index = 0
     for word in words:
         # If adding the new word to the current line would be too long,
         # then put it on a new line (and split it up if it's too long).
-        if (cur_line_length + len(word)) > line_length:
+        if (index == 0 or (cur_line_length + len(word)) > line_length):
             # Only move down to a new line if we have text on the current line.
             # Avoids situation where
             # wrapped whitespace causes emptylines in text.
@@ -403,6 +404,8 @@ def wrap_line(line, line_length):
             str_builder = str_builder + word.strip()
         
         cur_line_length = cur_line_length + len(word)
+
+        index = index + 1
 
     return str_builder
 
