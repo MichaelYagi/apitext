@@ -341,10 +341,18 @@ def calculate_lines(text, length):
     breaks = 0
 
     for word in words:
-        if len(word) + currentlength >= length:
-            breaks = breaks + 1
+
+        subwords = text.split("\n")
+        if len(subwords) > 0 or len(word) + currentlength >= length:
+
+        # subwords = word
+        # if len(subwords) + currentlength >= length:
+            if len(subwords) == 0:
+                breaks = breaks + 1
+            else:
+                breaks = len(subwords)
             currentlength = 0
-        currentlength = currentlength + len(word) + 1
+        currentlength = currentlength + len(subwords) + 1
 
     return breaks + 1
 
