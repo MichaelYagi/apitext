@@ -288,7 +288,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                         ]
 
                     return render.Root(
-                        delay = 100,
+                        delay = 90,
                         show_full_animation = True,
                         child = render.Row(
                             children = children_content,
