@@ -95,9 +95,9 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                     outputStr = outputStr[0:outputLen]
                     if outputLen >= 200:
                         outputStr = outputStr + "..."
-                        print("Decoded JSON truncated: " + outputStr)
+                        print("Decoded response JSON truncated: " + outputStr)
                     else:
-                        print("Decoded JSON: " + outputStr)
+                        print("Decoded response JSON: " + outputStr)
 
                 # Parse response path for JSON
                 response_path_data_body = parse_response_path(output, body_response_path, debug_output, ttl_seconds)
@@ -108,6 +108,12 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                     print("Getting text body. Pass: " + str(body_parse_failure == False))
                     if body_parse_failure:
                         children.append(render.WrappedText(content = body_parse_message, font = "tom-thumb", color = "#FF0000"))
+                    else:
+                        bodyoutputStr = output_body
+                        if len(bodyoutputStr) >= 200:
+                            print("Body text: " + bodyoutputStr[0:200] + "...")
+                        else:
+                            print("Body text: " + bodyoutputStr)
 
                 # Get heading
                 response_path_data_heading = parse_response_path(output, heading_response_path, debug_output, ttl_seconds)
@@ -118,6 +124,12 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                     print("Getting text heading. Pass: " + str(heading_parse_failure == False))
                     if heading_parse_failure:
                         children.append(render.WrappedText(content = heading_parse_message, font = "tom-thumb", color = "#FF0000"))
+                    else:
+                        headingoutputStr = output_heading
+                        if len(headingoutputStr) >= 200:
+                            print("Header text: " + headingoutputStr[0:200] + "...")
+                        else:
+                            print("Header text: " + headingoutputStr)
 
                 # Get image
                 response_path_data_image = parse_response_path(output, image_response_path, debug_output, ttl_seconds)
