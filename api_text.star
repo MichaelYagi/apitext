@@ -110,10 +110,11 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                         children.append(render.WrappedText(content = body_parse_message, font = "tom-thumb", color = "#FF0000"))
                     else:
                         bodyoutputStr = output_body
-                        if len(bodyoutputStr) >= 200:
-                            print("Body text: " + bodyoutputStr[0:200] + "...")
-                        else:
-                            print("Body text: " + bodyoutputStr)
+                        if bodyoutputStr != None:
+                            if len(bodyoutputStr) >= 200:
+                                print("Body text: " + bodyoutputStr[0:200] + "...")
+                            else:
+                                print("Body text: " + bodyoutputStr)
 
                 # Get heading
                 response_path_data_heading = parse_response_path(output, heading_response_path, debug_output, ttl_seconds)
@@ -126,10 +127,11 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                         children.append(render.WrappedText(content = heading_parse_message, font = "tom-thumb", color = "#FF0000"))
                     else:
                         headingoutputStr = output_heading
-                        if len(headingoutputStr) >= 200:
-                            print("Header text: " + headingoutputStr[0:200] + "...")
-                        else:
-                            print("Header text: " + headingoutputStr)
+                        if headingoutputStr != None: 
+                            if len(headingoutputStr) >= 200:
+                                print("Header text: " + headingoutputStr[0:200] + "...")
+                            else:
+                                print("Header text: " + headingoutputStr)
 
                 # Get image
                 response_path_data_image = parse_response_path(output, image_response_path, debug_output, ttl_seconds)
