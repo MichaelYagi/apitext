@@ -185,10 +185,10 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                     if output_heading != None and type(output_heading) == "string":
                         if rendered_image != None:
                             output_heading = wrap(output_heading, 9)
-                            heading_lines = calculate_lines(output_heading, 10)
+                            heading_lines = calculate_lines(output_heading, True, 10)
                             children.append(render.WrappedText(content = output_heading, font = "tom-thumb", color = heading_font_color, width = 41))
                         else:
-                            heading_lines = calculate_lines(output_heading, 17)
+                            heading_lines = calculate_lines(output_heading, False, 17)
                             children.append(render.Padding(
                                 pad = (0, 1, 0, 0),
                                 child = render.Column(
@@ -205,10 +205,10 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                     if output_body != None and type(output_body) == "string":
                         if rendered_image != None:
                             output_body = wrap(output_body, 9)
-                            body_lines = calculate_lines(output_body, 10)
+                            body_lines = calculate_lines(output_body, True, 10)
                             children.append(render.WrappedText(content = output_body, font = "tom-thumb", color = body_font_color, width = 41))
                         else:
-                            body_lines = calculate_lines(output_body, 17)
+                            body_lines = calculate_lines(output_body, False, 17)
                             children.append(render.Padding(
                                 pad = (0, 1, 0, 0),
                                 child = render.Column(
@@ -245,7 +245,10 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                                 print("No image URL found")
                                 children.append(render.WrappedText(content = "No image URL found", font = "tom-thumb", color = "#FF0000"))
 
-                    height = 32 + ((heading_lines + body_lines) - ((heading_lines + body_lines) * 0.52))
+                    percent = 0.52
+                    if image_placement == 4:
+                        percent = 0.69
+                    height = 32 + ((heading_lines + body_lines) - ((heading_lines + body_lines) * percent))
 
                     if debug_output:
                         print("heading_lines: " + str(heading_lines))
@@ -335,16 +338,25 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
         ),
     )
 
-def calculate_lines(text, length):
+def calculate_lines(text, wrapped, length):
     words = text.split(" ")
     currentlength = 0
     breaks = 0
 
-    for word in words:
-        if len(word) + currentlength >= length:
+    for subwords in words:
+        if wrapped:
+            subwords = text.split("\n")
+
+        if (len(subwords) > 0) and wrapped:
+            if len(subwords) == 0:
+                breaks = breaks + 1
+            else:
+                breaks = len(subwords)
+            currentlength = 0
+        elif len(subwords) + currentlength >= length:
             breaks = breaks + 1
             currentlength = 0
-        currentlength = currentlength + len(word) + 1
+        currentlength = currentlength + len(subwords) + 1
 
     return breaks + 1
 
