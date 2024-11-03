@@ -13,6 +13,8 @@ load("render.star", "render")
 load("schema.star", "schema")
 load("time.star", "time")
 
+MAX_TEXT_LENGTH = 1000
+
 def main(config):
     random.seed(time.now().unix // 10)
 
@@ -116,6 +118,10 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                             else:
                                 print("Body text: " + bodyoutputStr)
 
+                            if len(output_body) >= MAX_TEXT_LENGTH:
+                                output_body = output_body[0:MAX_TEXT_LENGTH] + "..."
+                                print("Body text truncated")
+
                 # Get heading
                 response_path_data_heading = parse_response_path(output, heading_response_path, debug_output, ttl_seconds)
                 output_heading = response_path_data_heading["output"]
@@ -132,6 +138,10 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                                 print("Header text: " + headingoutputStr[0:200] + "...")
                             else:
                                 print("Header text: " + headingoutputStr)
+
+                            if len(output_heading) >= MAX_TEXT_LENGTH:
+                                output_heading = output_heading[0:MAX_TEXT_LENGTH] + "..."
+                                print("Heading text truncated")
 
                 # Get image
                 response_path_data_image = parse_response_path(output, image_response_path, debug_output, ttl_seconds)
