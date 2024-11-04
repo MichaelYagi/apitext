@@ -50,16 +50,18 @@ JSON Response path for image: ```entities,[rand1],images,[rand]```
 
 -----
 
-API URL: ```https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&api_key=<api_key>``` 
+API URL: ```http://<plex_server_url>/library/sections/1/all```
 
-JSON Response path for heading: ```results,[rand1],original_title```
+Request headers: ```accept:application/json,X-Plex-Token:<plex_token>```
 
-JSON Response path for body: ```results,[rand1],overview```
+JSON Response path for heading: ```MediaContainer,Metadata,[rand1],title```
 
-JSON Response path for image: ```results,[rand1],poster_path```
+JSON Response path for body: ```MediaContainer,Metadata,[rand1],summary```
+
+JSON Response path for image: ```MediaContainer,Metadata,[rand1],thumb```
 
 Set the image placement: ```Left```
 
-Base URL: ```https://image.tmdb.org/x/y/w500```
+Base URL: ```http://<plex_server_url>```
 
-![Yuma_movie](https://michaelyagi.github.io/images/api_text_4.gif)
+![Akira_movie](https://github.com/MichaelYagi/apitext/blob/main/api_text.gif?raw=true)
