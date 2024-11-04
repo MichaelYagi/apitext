@@ -271,7 +271,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
 
                     percent = 0.52
                     if image_placement == 4:
-                        percent = 0.64
+                        percent = 0.62
                     height = 32 + ((heading_lines + body_lines) - ((heading_lines + body_lines) * percent))
 
                     if debug_output:
