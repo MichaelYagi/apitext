@@ -339,7 +339,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                 )
 
         else:
-            message = "Oops! Check URL and header values. URL must return JSON or text."
+            message = "Oops! Check URL and header values. URL "+api_url+" must return JSON or text."
             if debug_output:
                 print(message)
 
@@ -348,15 +348,18 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
 
     row = render.Row(children = [])
     if debug_output == True:
-        row = render.Row(
-            main_align = "space_evenly",
-            cross_align = "center",
-            children = [
-                render.WrappedText(content = message, font = "tom-thumb", color = "#FF0000"),
-            ],
+        row = render.Marquee(
+            offset_start = 32,
+            offset_end = 32,
+            height = 32,
+            scroll_direction = "vertical",
+            width = 64,
+            child = render.WrappedText(content = message, font = "tom-thumb", color = "#FF0000"),
         )
 
     return render.Root(
+        delay = 90,
+        show_full_animation = True,
         child = render.Box(
             row,
         ),
