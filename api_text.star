@@ -69,9 +69,9 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                     cross_align = "center",
                     children = [
                         render.Box(
-                            width=44,
-                            height=12,
-                            color="#FFFFFF",
+                            width = 44,
+                            height = 12,
+                            color = "#FFFFFF",
                         ),
                     ]
                 ),
@@ -82,9 +82,9 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                     cross_align = "center",
                     children = [
                         render.Box(
-                            width=42,
-                            height=10,
-                            color="#000000",
+                            width = 42,
+                            height = 10,
+                            color = "#000000",
                         ),
                     ]
                 ),
@@ -94,7 +94,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                     main_align = "space_evenly",
                     cross_align = "center",
                     children = [
-                        render.Text(content = message, font = "tom-thumb", color = "#FFFFFF"),
+                        render.Text(content = message, font = "tom-thumb", color = body_font_color),
                     ],
                 ),
             )
