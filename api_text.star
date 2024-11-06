@@ -5,8 +5,8 @@ Description: Display text from an API endpoint.
 Author: Michael Yagi
 """
 
-load("encoding/base64.star", "base64")
 load("cache.star", "cache")
+load("encoding/base64.star", "base64")
 load("encoding/json.star", "json")
 load("http.star", "http")
 load("random.star", "random")
@@ -62,7 +62,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
         message = "API TEXT"
 
         row = render.Stack([
-            render.Image(src=base64.decode(BG_IMAGE)),
+            render.Image(src = base64.decode(BG_IMAGE)),
             render.Box(
                 render.Row(
                     main_align = "space_evenly",
@@ -73,7 +73,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                             height = 12,
                             color = "#FFFFFF",
                         ),
-                    ]
+                    ],
                 ),
             ),
             render.Box(
@@ -86,7 +86,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                             height = 10,
                             color = "#000000",
                         ),
-                    ]
+                    ],
                 ),
             ),
             render.Box(
@@ -97,7 +97,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                         render.Text(content = message, font = "tom-thumb", color = body_font_color),
                     ],
                 ),
-            )
+            ),
         ])
 
     if api_url == "":
@@ -178,7 +178,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                         children.append(render.WrappedText(content = heading_parse_message, font = "tom-thumb", color = "#FF0000"))
                     else:
                         headingoutputStr = output_heading
-                        if headingoutputStr != None: 
+                        if headingoutputStr != None:
                             if len(headingoutputStr) >= 200:
                                 print("Header text: " + headingoutputStr[0:200] + "...")
                             else:
@@ -245,7 +245,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                                 main_align = "space_evenly",
                                 cross_align = "center",
                                 children = [
-                                    render.Image(src = img, width = 22)
+                                    render.Image(src = img, width = 22),
                                 ],
                             )
 
@@ -261,10 +261,10 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                             children.append(render.Padding(
                                 pad = (0, 1, 0, 0),
                                 child = render.Column(
-                                    [render.WrappedText(content = output_heading, font = "tom-thumb", color = heading_font_color)]
-                                )
+                                    [render.WrappedText(content = output_heading, font = "tom-thumb", color = heading_font_color)],
+                                ),
                             ))
-                        
+
                     elif debug_output and heading_parse_failure == True:
                         message = "Heading " + heading_parse_message
                         children.append(render.WrappedText(content = message, font = "tom-thumb", color = "#FF0000"))
@@ -281,8 +281,8 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                             children.append(render.Padding(
                                 pad = (0, 1, 0, 0),
                                 child = render.Column(
-                                    [render.WrappedText(content = output_body, font = "tom-thumb", color = body_font_color)]
-                                )
+                                    [render.WrappedText(content = output_body, font = "tom-thumb", color = body_font_color)],
+                                ),
                             ))
                     elif debug_output and body_parse_failure == True:
                         message = "Body " + body_parse_message
@@ -340,10 +340,10 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                                             child = render.Column(
                                                 children = children,
                                             ),
-                                        )
-                                    ]
-                                )
-                            )
+                                        ),
+                                    ],
+                                ),
+                            ),
                         ]
                     else:
                         children_content = [
@@ -384,7 +384,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                 )
 
         else:
-            message = "Oops! Check URL and header values. URL "+api_url+" must return JSON or text."
+            message = "Oops! Check URL and header values. URL " + api_url + " must return JSON or text."
             if debug_output:
                 print(message)
 
@@ -438,15 +438,15 @@ def wrap(string, line_length):
 
     b = ""
     for line in lines:
-        b = b + wrap_line(line, line_length);
-    
+        b = b + wrap_line(line, line_length)
+
     return b
 
 def wrap_line(line, line_length):
-    if len(line) == 0: 
+    if len(line) == 0:
         return "\n"
 
-    if len(line) <= line_length: 
+    if len(line) <= line_length:
         return line + "\n"
 
     words = line.split(" ")
@@ -473,21 +473,21 @@ def wrap_line(line, line_length):
                     word = word + " "
                     break
                 else:
-                    str_builder = str_builder + word[0:line_length-1]
+                    str_builder = str_builder + word[0:line_length - 1]
                     if word.strip().rfind("-") == -1 and word.strip().rfind("'") == -1:
                         str_builder = str_builder + "-"
-                    word = word[line_length-1:len(word)]
+                    word = word[line_length - 1:len(word)]
                     str_builder = str_builder + "\n"
 
             # Remove leading whitespace from the word,
             # so the new line starts flush to the left.
             word = word.lstrip(" ")
-        
+
         if word.rfind(" ") == -1:
             str_builder = str_builder + " " + word.strip()
         else:
             str_builder = str_builder + word.strip()
-        
+
         cur_line_length = cur_line_length + len(word)
 
         index = index + 1
@@ -676,7 +676,7 @@ def get_schema():
         schema.Option(
             display = "Left",
             value = "4",
-        )
+        ),
     ]
 
     return schema.Schema(
