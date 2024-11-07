@@ -18,7 +18,7 @@ BG_IMAGE = "/9j/4AAQSkZJRgABAQEBLAEsAAD/4QDARXhpZgAATU0AKgAAAAgABgEaAAUAAAABAAAA
 MAX_TEXT_LENGTH = 1000
 
 def main(config):
-    random.seed(time.now().unix // 10)
+    random.seed(time.now().unix)
 
     api_url = config.str("api_url", "")
     heading_response_path = config.get("heading_response_path", "")
