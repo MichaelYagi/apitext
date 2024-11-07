@@ -239,7 +239,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                                 print("Image URL found but failed to render URL " + image_endpoint)
                             else:
                                 print("No image URL found")
-                        elif image_placement == 4:
+                        elif image_placement == 4 or image_placement == 5:
                             rendered_image = render.Column(
                                 expanded = True,
                                 main_align = "space_evenly",
@@ -289,7 +289,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                         children.append(render.WrappedText(content = message, font = "tom-thumb", color = "#FF0000"))
 
                     # If images are stacked
-                    if img != None and image_placement != 4:
+                    if img != None and image_placement != 4 and image_placement != 5:
                         image_render = render.Image(src = img, width = 64)
                         row = render.Row(
                             expanded = True,
@@ -315,7 +315,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                                 children.append(render.WrappedText(content = "No image URL found", font = "tom-thumb", color = "#FF0000"))
 
                     percent = 0.52
-                    if image_placement == 4:
+                    if image_placement == 4 or image_placement == 5:
                         percent = 0.62
                     height = 32 + ((heading_lines + body_lines) - ((heading_lines + body_lines) * percent))
 
@@ -324,27 +324,49 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                         print("body_lines: " + str(body_lines))
                         print("Marquee height: " + str(int(height)))
 
-                    if rendered_image != None and image_placement == 4:
-                        children_content = [
-                            rendered_image,
-                            render.Padding(
-                                pad = (1, 0, 0, 0),
-                                child = render.Column(
-                                    children = [
-                                        render.Marquee(
-                                            offset_start = 32,
-                                            offset_end = 32,
-                                            height = int(height),
-                                            scroll_direction = "vertical",
-                                            width = 41,
-                                            child = render.Column(
-                                                children = children,
+                    if rendered_image != None and (image_placement == 4 or image_placement == 5):
+                        if image_placement == 4:
+                            children_content = [
+                                rendered_image,
+                                render.Padding(
+                                    pad = (1, 0, 0, 0),
+                                    child = render.Column(
+                                        children = [
+                                            render.Marquee(
+                                                offset_start = 32,
+                                                offset_end = 32,
+                                                height = int(height),
+                                                scroll_direction = "vertical",
+                                                width = 41,
+                                                child = render.Column(
+                                                    children = children,
+                                                ),
                                             ),
-                                        ),
-                                    ],
+                                        ],
+                                    ),
                                 ),
-                            ),
-                        ]
+                            ]
+                        else:
+                            children_content = [
+                                render.Padding(
+                                    pad = (0, 0, 1, 0),
+                                    child = render.Column(
+                                        children = [
+                                            render.Marquee(
+                                                offset_start = 32,
+                                                offset_end = 32,
+                                                height = int(height),
+                                                scroll_direction = "vertical",
+                                                width = 41,
+                                                child = render.Column(
+                                                    children = children,
+                                                ),
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                                rendered_image,
+                            ]
                     else:
                         children_content = [
                             render.Marquee(
@@ -676,6 +698,10 @@ def get_schema():
         schema.Option(
             display = "Left",
             value = "4",
+        ),
+        schema.Option(
+            display = "Right",
+            value = "5",
         ),
     ]
 
