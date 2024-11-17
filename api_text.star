@@ -232,7 +232,7 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                             img = output_image_map["data"]
 
                             if img == None and debug_output:
-                                message = "Could not retrieve image"
+                                message = "Could not retrieve image. Recheck URL and headers."
                                 print(message)
                                 children.append(render.WrappedText(content = message, font = "tom-thumb", color = "#FF0000"))
 
@@ -584,7 +584,7 @@ def parse_response_path(output, responsePathStr, debug_output, ttl_seconds, is_x
                     path_str = path_str + "/" + item
 
                 if debug_output:
-                    print(path_str)
+                    print("Appended path: "+path_str)
 
             if failure == False:
                 output = output.query_all(path_str)
