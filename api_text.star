@@ -545,8 +545,18 @@ def parse_response_path(output, responsePathStr, debug_output, ttl_seconds, is_x
 
         if is_xml:
             path_str = ""
+            last_item = ""
             for item in responsePathArray:
                 item = item.strip()
+
+                if len(path_str) > 0:
+                    test_output = output.query_all(path_str)
+                    if type(test_output) == "list" and len(test_output) == 0:
+                        failure = True
+                        message = "Response path has empty list for " + last_item + "."
+                        if debug_output:
+                            print("responsePathArray for " + last_item + " invalid. Response path has empty list.")
+                        break
 
                 index = -1
                 valid_rand = False
@@ -559,7 +569,7 @@ def parse_response_path(output, responsePathStr, debug_output, ttl_seconds, is_x
                         break
 
                 if valid_rand:
-                    test_output = output.query_all(path_str) 
+                    # test_output = output.query_all(path_str) 
                     if type(test_output) == "list" and len(test_output) > 0:
                         if item == "[rand]":
                             index = random.number(0, len(test_output) - 1)
@@ -582,6 +592,8 @@ def parse_response_path(output, responsePathStr, debug_output, ttl_seconds, is_x
                     path_str = path_str + "[" + str(index) + "]"
                 else:
                     path_str = path_str + "/" + item
+
+                last_item = item
 
                 if debug_output:
                     print("Appended path: "+path_str)
