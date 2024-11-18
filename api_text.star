@@ -160,9 +160,9 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                         bodyoutputStr = output_body
                         if bodyoutputStr != None:
                             if len(bodyoutputStr) >= 200:
-                                print("Body text: " + bodyoutputStr[0:200] + "...")
+                                print("Body text: " + str(bodyoutputStr)[0:200] + "...")
                             else:
-                                print("Body text: " + bodyoutputStr)
+                                print("Body text: " + str(bodyoutputStr))
 
                             if len(output_body) >= MAX_TEXT_LENGTH:
                                 output_body = output_body[0:MAX_TEXT_LENGTH] + "..."
@@ -184,9 +184,9 @@ def get_text(api_url, base_url, heading_response_path, body_response_path, image
                         headingoutputStr = output_heading
                         if headingoutputStr != None:
                             if len(headingoutputStr) >= 200:
-                                print("Header text: " + headingoutputStr[0:200] + "...")
+                                print("Header text: " + str(headingoutputStr)[0:200] + "...")
                             else:
-                                print("Header text: " + headingoutputStr)
+                                print("Header text: " + str(headingoutputStr))
 
                             if len(output_heading) >= MAX_TEXT_LENGTH:
                                 output_heading = output_heading[0:MAX_TEXT_LENGTH] + "..."
@@ -590,6 +590,12 @@ def parse_response_path(output, responsePathStr, debug_output, ttl_seconds, is_x
                 output = output.query_all(path_str)
                 if type(output) == "list" and len(output) > 0:
                     output = output[0]
+
+                if type(output) != "string":
+                    failure = True
+                    message = "Response path result not a string, found " + type(output) + " instead."
+                    if debug_output:
+                        print(message)
             else:
                 output = None
         else:
